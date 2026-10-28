@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Refraction of Light | RayLab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg:#f5f9ff; --white:#fff; --text:#17365d;
+  --muted:#61748e; --blue:#2583ed; --purple:#7540c8;
+  --border:#dce7f5; --pale:#eef7ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:85px}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:"DM Sans",sans-serif;line-height:1.7;
+}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit}
+.navbar{
+  position:sticky;top:0;z-index:10;min-height:70px;
+  padding:0 7%;display:flex;align-items:center;
+  justify-content:space-between;gap:16px;
+  background:rgba(255,255,255,.94);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.logo{font:700 22px "Space Grotesk",sans-serif}
+.logo b{color:var(--purple);margin-right:7px}
+.logo span{color:var(--blue)}
+.navright{display:flex;gap:18px;align-items:center;font-size:13px;color:var(--muted)}
+.back{padding:8px 12px;border:1px solid var(--border);border-radius:9px}
+main{max-width:1200px;margin:auto;padding:36px 6% 75px}
+.breadcrumb{font-size:12px;color:var(--muted);margin-bottom:20px}
+.breadcrumb span,.eyebrow{color:var(--blue)}
+.hero{max-width:800px;margin-bottom:28px}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:2px}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.3}
+h1{font-size:clamp(35px,5vw,55px);letter-spacing:-1.8px;margin:10px 0}
+h1 span{color:var(--blue)}
+.hero p{color:var(--muted);font-size:15px;max-width:700px}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}
+.tag{background:#e7f1ff;color:#245da8;border:1px solid #d5e6fb;border-radius:30px;padding:5px 11px;font-size:11px}
+.section{margin-top:40px}
+.sectionhead{margin-bottom:16px}
+.sectionhead h2{font-size:25px;margin-bottom:5px}
+.sectionhead p{font-size:13px;color:var(--muted)}
+.panel{background:#fff;border:1px solid var(--border);border-radius:17px;overflow:hidden;box-shadow:0 8px 26px rgba(29,86,155,.055)}
+.labgrid{display:grid;grid-template-columns:minmax(0,1fr) 280px}
+.stage{padding:12px;background:#fff;min-width:0}
+.stage-label{font-size:10px;color:var(--muted);letter-spacing:1px;padding:8px 10px}
+#raySvg{width:100%;height:auto;display:block;border-radius:12px;background:#fff}
+.legend{display:flex;flex-wrap:wrap;gap:13px;padding:12px 10px;font-size:11px;color:var(--muted)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.controls{padding:22px;border-left:1px solid var(--border)}
+.controls h3{font-size:18px}
+.controls>p{font-size:12px;color:var(--muted);margin:4px 0 18px}
+.control{margin:17px 0}
+.chead{display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:8px}
+output{color:var(--blue);font-weight:700}
+input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer}
+select{width:100%;padding:10px;border:1px solid var(--border);border-radius:9px;background:#f7faff;color:var(--text)}
+.note{font-size:11px;color:var(--muted);margin-top:7px}
+.result{padding:14px;background:#eef7ff;border:1px solid #cce5ff;border-radius:12px;margin-top:18px}
+.result small{color:var(--muted);font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.result strong{display:block;color:#176dc5;font:600 18px "Space Grotesk",sans-serif;margin:5px 0}
+.result p{font-size:12px;color:#506985}
+.formula{background:#f0f7ff;border:1px solid #d6e7fb;color:#176dc5;border-radius:10px;text-align:center;padding:14px;margin:13px 0;font:600 22px "Space Grotesk",sans-serif}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.card{padding:22px}
+.card h3{font-size:18px;margin-bottom:9px}
+.card p,.card li{font-size:13px;color:var(--muted)}
+.card ul{padding-left:19px;margin-top:9px}
+.card li{margin:5px 0}
+.blue{color:var(--blue);font-weight:600}
+.defgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.def{padding:17px;border:1px solid var(--border);border-radius:12px;background:#fff}
+.def h3{font-size:15px;color:var(--blue);margin-bottom:6px}
+.def p{font-size:12px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table{width:100%;min-width:480px;border-collapse:collapse;background:#fff;font-size:12px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--border)}
+th{background:#eaf3ff;color:#245da8}
+td{color:var(--muted)}
+tr:last-child td{border-bottom:0}
+.example{padding:22px}
+.example h3{margin-bottom:9px}
+.example p{font-size:13px;color:var(--muted);margin:7px 0}
+.answer{background:#eef7ff;color:#176dc5!important;font-weight:700;padding:8px;border-radius:8px}
+.quiz{padding:22px}
+.question{padding:17px 0;border-bottom:1px solid var(--border)}
+.question p{font-size:14px;font-weight:600;margin-bottom:10px}
+.option{display:block;padding:9px 12px;border:1px solid var(--border);border-radius:9px;margin:7px 0;font-size:13px;color:var(--muted);cursor:pointer}
+.option:hover{background:#f0f7ff;border-color:#9bc9fa}
+.option input{accent-color:var(--blue);margin-right:8px}
+.btn{border:0;border-radius:9px;padding:11px 17px;background:linear-gradient(110deg,#3987e8,#65b8ff);color:#fff;font-size:12px;font-weight:700;cursor:pointer;margin-top:16px}
+#quizResult{font-size:13px;color:#176dc5;margin-top:12px}
+footer{text-align:center;padding:24px;border-top:1px solid var(--border);background:#fff;color:var(--muted);font-size:11px}
+@media(max-width:850px){.labgrid{grid-template-columns:1fr}.controls{border-left:0;border-top:1px solid var(--border)}.defgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){main{padding:25px 5% 55px}.navbar{padding:0 5%}.navright{gap:8px;font-size:11px}.optional{display:none}.twocol{grid-template-columns:1fr}.defgrid{grid-template-columns:1fr}.controls{padding:17px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+
+<body>
+<nav class="navbar">
+  <a class="logo" href="index.html"><b>✦</b>Ray<span>Lab</span></a>
+  <div class="navright">
+    <a class="back" href="index.html">← Main page</a>
+    <a class="optional" href="#learn">Learn</a>
+    <a class="optional" href="#quiz">Quiz</a>
+  </div>
+</nav>
+
+<main>
+  <div class="breadcrumb"><a href="index.html">RayLab</a> / <span>Refraction of Light</span></div>
+
+  <header class="hero">
+    <div class="eyebrow">CLASS 12 PHYSICS · RAY OPTICS</div>
+    <h1>Refraction <span>of Light</span></h1>
+    <p>Why does a pencil look bent in water? Why does a ray change direction when it enters glass? Explore how light travels between different transparent media with this interactive lab.</p>
+    <div class="tags">
+      <span class="tag">Refraction</span>
+      <span class="tag">Snell's law</span>
+      <span class="tag">Refractive index</span>
+      <span class="tag">Glass slab</span>
+    </div>
+  </header>
+
+  <section class="section" id="experiment">
+    <div class="sectionhead">
+      <h2>01 / The refraction lab</h2>
+      <p>Change the angle and the two refractive indices. Watch the ray change direction.</p>
+    </div>
+    <div class="panel">
+      <div class="labgrid">
+        <div class="stage">
+          <div class="stage-label">LIVE RAY SIMULATION · SCHEMATIC</div>
+          <svg id="raySvg" viewBox="0 0 700 430" role="img" aria-label="Interactive diagram showing a light ray refracting at a boundary between two media">
+            <rect width="700" height="430" fill="#fff"/>
+            <g id="drawing"></g>
+          </svg>
+          <div class="legend">
+            <span><i class="dot" style="background:#0875d1"></i>Incident ray</span>
+            <span><i class="dot" style="background:#7540c8"></i>Refracted ray</span>
+            <span><i class="dot" style="background:#7c8da6"></i>Normal</span>
+          </div>
+        </div>
+
+        <aside class="controls">
+          <h3>Experiment controls</h3>
+          <p>Observe what happens when light enters a different medium.</p>
+
+          <div class="control">
+            <div class="chead"><label for="mode">Experiment</label></div>
+            <select id="mode">
+              <option value="boundary">Two media</option>
+              <option value="slab">Parallel glass slab</option>
+            </select>
+          </div>
+
+          <div class="control">
+            <div class="chead"><label for="angle">Angle of incidence</label><output id="angleOut">40°</output></div>
+            <input id="angle" type="range" min="0" max="80" value="40">
+          </div>
+
+          <div class="control">
+            <div class="chead"><label for="n1">Refractive index n₁</label><output id="n1Out">1.00</output></div>
+            <input id="n1" type="range" min="1" max="2.5" step=".05" value="1">
+            <div class="note">Medium 1: above the boundary.</div>
+          </div>
+
+          <div class="control">
+            <div class="chead"><label for="n2">Refractive index n₂</label><output id="n2Out">1.50</output></div>
+            <input id="n2" type="range" min="1" max="2.5" step=".05" value="1.5">
+            <div class="note">Medium 2: below the boundary.</div>
+          </div>
+
+          <div class="result">
+            <small>Calculated result</small>
+            <strong id="resultTitle">Bends towards normal</strong>
+            <p id="rAngle">Angle of refraction: 25.4°</p>
+            <p id="rIndex">n₂/n₁ = 1.50</p>
+            <p id="rExtra">Light speed is lower in medium 2.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <p class="note">The diagram is schematic. Angles are measured from the normal, not from the surface.</p>
+  </section>
+
+  <section class="section" id="learn">
+    <div class="sectionhead">
+      <h2>02 / What is refraction?</h2>
+      <p>Understand the physical idea before using the formula.</p>
+    </div>
+    <div class="twocol">
+      <article class="panel card">
+        <h3>Definition</h3>
+        <p><span class="blue">Refraction</span> is the change in direction of light when it passes obliquely from one transparent medium to another because its speed changes.</p>
+        <ul>
+          <li>The frequency of light remains unchanged at the boundary.</li>
+          <li>Its speed and wavelength change when it enters a medium with a different refractive index.</li>
+          <li>At normal incidence, the ray does not bend, although its speed changes.</li>
+        </ul>
+      </article>
+      <article class="panel card">
+        <h3>Why does light bend?</h3>
+        <p>Light travels at different speeds in different media. When it enters the second medium obliquely, one part of the wavefront changes speed before another part. This changes the direction of propagation.</p>
+        <p style="margin-top:10px">Entering a medium with a higher refractive index generally bends the ray <span class="blue">towards the normal</span>. Entering a lower-index medium bends it away from the normal.</p>
+      </article>
+    </div>
+
+    <div class="sectionhead" style="margin-top:35px">
+      <h2>03 / Snell's law</h2>
+      <p>The relationship between the angles and the refractive indices of two media.</p>
+    </div>
+    <div class="panel card">
+      <div class="formula">n₁ sin i = n₂ sin r</div>
+      <div class="defgrid">
+        <div class="def"><h3>n₁ and n₂</h3><p>Refractive indices of the first and second media.</p></div>
+        <div class="def"><h3>i</h3><p>Angle of incidence, measured between the incident ray and normal.</p></div>
+        <div class="def"><h3>r</h3><p>Angle of refraction, measured between the refracted ray and normal.</p></div>
+      </div>
+      <p style="margin-top:15px;font-size:13px;color:var(--muted)">For a given pair of media and a fixed wavelength, the ratio sin i / sin r is constant. This is the basis of Snell's law.</p>
+    </div>
+
+    <div class="sectionhead" style="margin-top:35px">
+      <h2>04 / Refractive index</h2>
+      <p>Refractive index tells us how much the speed of light changes in a medium.</p>
+    </div>
+    <div class="twocol">
+      <article class="panel card">
+        <h3>Absolute refractive index</h3>
+        <div class="formula">n = c/v</div>
+        <p><b>c</b> is the speed of light in vacuum and <b>v</b> is its speed in the medium.</p>
+        <p style="margin-top:9px">For ordinary transparent media, n is generally greater than or equal to 1.</p>
+      </article>
+      <article class="panel card">
+        <h3>Relative refractive index</h3>
+        <div class="formula">n₂₁ = n₂/n₁ = v₁/v₂</div>
+        <p>This compares the refractive indices of two media. It helps predict how a ray bends as it crosses their boundary.</p>
+        <p style="margin-top:9px">A larger refractive index means light travels more slowly in that medium.</p>
+      </article>
+    </div>
+
+    <div class="sectionhead" style="margin-top:35px">
+      <h2>05 / What happens at the boundary?</h2>
+      <p>Use the comparison below to remember the two common cases.</p>
+    </div>
+    <div class="panel tablewrap">
+      <table>
+        <thead><tr><th>Situation</th><th>Direction of bending</th><th>Angle comparison</th></tr></thead>
+        <tbody>
+          <tr><td>n₂ greater than n₁</td><td>Towards the normal</td><td>r less than i</td></tr>
+          <tr><td>n₂ less than n₁</td><td>Away from the normal</td><td>r greater than i</td></tr>
+          <tr><td>Normal incidence</td><td>No change in direction</td><td>i = r = 0°</td></tr>
+          <tr><td>Same refractive index</td><td>No bending at the boundary</td><td>r = i</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sectionhead" style="margin-top:35px">
+      <h2>06 / Refraction through a glass slab</h2>
+      <p>For a plane-parallel slab surrounded by the same medium, the emergent ray is parallel to the incident ray.</p>
+    </div>
+    <div class="panel card">
+      <p>At the first surface, the ray refracts into the glass. At the second parallel surface, it refracts out again. The two direction changes leave the emergent ray parallel to the incident ray, but shifted sideways. This shift is called <span class="blue">lateral displacement</span>.</p>
+      <div class="formula">d = t sin(i − r) / cos r</div>
+      <p>Here, <b>d</b> is lateral displacement, <b>t</b> is slab thickness, <b>i</b> is the angle of incidence, and <b>r</b> is the angle inside the slab.</p>
+      <p style="margin-top:9px">The formula applies to a plane-parallel slab with the same external medium on both sides.</p>
+    </div>
+
+    <div class="sectionhead" style="margin-top:35px">
+      <h2>07 / NCERT-style solved example</h2>
+      <p>Calculate the refracted angle using Snell's law.</p>
+    </div>
+    <article class="panel example">
+      <h3>Question</h3>
+      <p>A ray of light travels from air (n₁ = 1.00) into glass (n₂ = 1.50). The angle of incidence is 30°. Find the angle of refraction.</p>
+      <p><b>Step 1:</b> Apply Snell's law: n₁ sin i = n₂ sin r.</p>
+      <p><b>Step 2:</b> Substitute values: 1.00 × sin 30° = 1.50 × sin r.</p>
+      <p>Therefore, sin r = 0.5 / 1.5 = 1/3.</p>
+      <p class="answer">r = sin⁻¹(1/3) ≈ 19.5°.</p>
+      <p>The refracted ray bends towards the normal because it enters a medium with a higher refractive index.</p>
+    </article>
+
+    <div class="sectionhead" style="margin-top:35px">
+      <h2>08 / Test your understanding</h2>
+      <p>Try these four questions.</p>
+    </div>
+    <section class="panel quiz" id="quiz">
+      <div class="question">
+        <p>1. When light enters glass from air obliquely, it usually bends:</p>
+        <label class="option"><input type="radio" name="q1" value="a"> Away from the normal</label>
+        <label class="option"><input type="radio" name="q1" value="b"> Towards the normal</label>
+        <label class="option"><input type="radio" name="q1" value="c"> Along the surface</label>
+      </div>
+      <div class="question">
+        <p>2. Which quantity remains unchanged when light refracts at a stationary boundary?</p>
+        <label class="option"><input type="radio" name="q2" value="a"> Speed</label>
+        <label class="option"><input type="radio" name="q2" value="b"> Wavelength</label>
+        <label class="option"><input type="radio" name="q2" value="c"> Frequency</label>
+      </div>
+      <div class="question">
+        <p>3. If n = 1.5, what is the speed of light in the medium? Take c = 3 × 10⁸ m/s.</p>
+        <label class="option"><input type="radio" name="q3" value="a"> 2 × 10⁸ m/s</label>
+        <label class="option"><input type="radio" name="q3" value="b"> 4.5 × 10⁸ m/s</label>
+        <label class="option"><input type="radio" name="q3" value="c"> 3 × 10⁸ m/s</label>
+      </div>
+      <div class="question">
+        <p>4. A ray enters a plane-parallel glass slab from air. The emergent ray is ideally:</p>
+        <label class="option"><input type="radio" name="q4" value="a"> Perpendicular to the incident ray</label>
+        <label class="option"><input type="radio" name="q4" value="b"> Parallel to the incident ray</label>
+        <label class="option"><input type="radio" name="q4" value="c"> Always along the normal</label>
+      </div>
+      <button class="btn" id="checkQuiz">Check my answers →</button>
+      <p id="quizResult" aria-live="polite"></p>
+    </section>
+  </section>
+</main>
+
+<footer>RayLab · Learn physics by exploring · NCERT-oriented learning</footer>
+
+<script>
+const angleEl = document.getElementById("angle");
+const n1El = document.getElementById("n1");
+const n2El = document.getElementById("n2");
+const modeEl = document.getElementById("mode");
+const drawing = document.getElementById("drawing");
+
+function svgText(x,y,str,color="#17365d",size=13,anchor="middle"){
+  return `<text x="${x}" y="${y}" fill="${color}" font-size="${size}" font-weight="600" text-anchor="${anchor}" font-family="DM Sans, sans-serif">${str}</text>`;
+}
+function svgLine(x1,y1,x2,y2,color,width=2,dash=""){
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${width}" stroke-linecap="round" ${dash?`stroke-dasharray="${dash}"`:""}/>`;
+}
+function point(x,y,color){
+  return `<circle cx="${x}" cy="${y}" r="4" fill="${color}"/>`;
+}
+function ray(x1,y1,x2,y2,color,width=3){
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${width}" stroke-linecap="round"/>`;
+}
+function render(){
+  const iDeg = Number(angleEl.value);
+  const n1 = Number(n1El.value);
+  const n2 = Number(n2El.value);
+  const slab = modeEl.value === "slab";
+
+  document.getElementById("angleOut").textContent = iDeg + "°";
+  document.getElementById("n1Out").textContent = n1.toFixed(2);
+  document.getElementById("n2Out").textContent = n2.toFixed(2);
+
+  const rad = Math.PI / 180;
+  const i = iDeg * rad;
+  const sinR = n1 * Math.sin(i) / n2;
+  const tir = sinR > 1;
+
+  let rDeg = tir ? null : Math.asin(Math.max(-1,Math.min(1,sinR))) / rad;
+  document.getElementById("resultTitle").textContent =
+    tir ? "Total internal reflection" :
+    n1 > n2 && iDeg > 0 ? "Bends away from normal" :
+    n2 > n1 && iDeg > 0 ? "Bends towards normal" : "No change in direction";
+
+  document.getElementById("rAngle").textContent =
+    tir ? "No refracted ray: total internal reflection." :
+    "Angle of refraction r = " + rDeg.toFixed(1) + "°";
+  document.getElementById("rIndex").textContent =
+    "Relative index n₂/n₁ = " + (n2/n1).toFixed(3);
+  document.getElementById("rExtra").textContent =
+    tir ? "The ray is reflected back into medium 1." :
+    n2 > n1 ? "Light travels more slowly in medium 2." :
+    n2 < n1 ? "Light travels faster in medium 2." :
+    "Both media have the same refractive index.";
+
+  const cx = 350, cy = 210, len = 170;
+  let s = `<rect width="700" height="430" fill="#fff"/>`;
+  s += `<rect x="0" y="${cy}" width="700" height="${430-cy}" fill="#edf6ff"/>`;
+  s += svgLine(25,cy,675,cy,"#6c8fb8",2);
+  s += svgLine(cx,35,cx,395,"#7c8da6",1.6,"7 6");
+  s += svgText(20,35,"MEDIUM 1","#506985",12,"start");
+  s += svgText(20,cy+25,"MEDIUM 2","#245da8",12,"start");
+  s += svgText(665,cy-12,"Boundary","#61748e",11,"end");
+  s += svgText(cx+12,48,"Normal","#61748e",11,"start");
+
+  const x1 = cx - len*Math.sin(i);
+  const y1 = cy - len*Math.cos(i);
+  s += ray(x1,y1,cx,cy,"#0875D1",4);
+  s += `<path d="M${cx-48*Math.sin(i)},${cy-48*Math.cos(i)} A48 48 0 0 1 ${cx},${cy-48}" fill="none" stroke="#0875D1" stroke-width="1.5"/>`;
+  s += svgText(cx-68,cy-49,`i = ${iDeg}°`,"#0875D1",12);
+
+  if(!tir){
+    const r = rDeg*rad;
+    const refrX = cx + len*Math.sin(r);
+    const refrY = cy + len*Math.cos(r);
+    s += ray(cx,cy,refrX,refrY,"#7540C8",4);
+    s += `<path d="M${cx},${cy+48} A48 48 0 0 0 ${cx+48*Math.sin(r)},${cy+48*Math.cos(r)}" fill="none" stroke="#7540C8" stroke-width="1.5"/>`;
+    s += svgText(cx+72,cy+62,`r = ${rDeg.toFixed(1)}°`,"#7540C8",12);
+    s += point(refrX,refrY,"#7540C8");
+  } else {
+    const reflX = cx + len*Math.sin(i);
+    const reflY = cy - len*Math.cos(i);
+    s += ray(cx,cy,reflX,reflY,"#7540C8",4);
+    s += svgText(cx+85,cy-85,"Reflected ray","#7540C8",12);
+  }
+  s += point(cx,cy,"#17365d");
+
+  if(slab){
+    // Show a second parallel boundary and the emergent ray.
+    const slabY = 330;
+    s += `<rect x="30" y="${cy}" width="640" height="${slabY-cy}" fill="#a8d6ff" fill-opacity=".23" stroke="none"/>`;
+    s += svgLine(30,slabY,670,slabY,"#6c8fb8",2);
+    s += svgLine(cx,slabY-24,cx,slabY+24,"#7c8da6",1.3,"5 5");
+    if(!tir){
+      const r = rDeg*rad;
+      const insideLen = (slabY-cy)/Math.cos(r);
+      const exitX = cx + insideLen*Math.sin(r);
+      const exitY = slabY;
+      s += ray(cx,cy,exitX,exitY,"#7540C8",4);
+      const emergentLen = 140;
+      const endX = exitX + emergentLen*Math.sin(i);
+      const endY = exitY + emergentLen*Math.cos(i);
+      s += ray(exitX,exitY,endX,endY,"#0875D1",4);
+      s += svgText(520,slabY+34,"Emergent ray","#0875D1",12);
+      s += svgText(85,slabY-10,"Parallel glass slab","#245da8",12,"start");
+    }
+  }
+
+  drawing.innerHTML = s;
+}
+[angleEl,n1El,n2El,modeEl].forEach(el=>el.addEventListener("input",render));
+render();
+
+document.getElementById("checkQuiz").addEventListener("click",()=>{
+  const answers={q1:"b",q2:"c",q3:"a",q4:"b"};
+  let score=0,attempted=0;
+  for(const q in answers){
+    const a=document.querySelector(`input[name="${q}"]:checked`);
+    if(a)attempted++;
+    if(a && a.value===answers[q])score++;
+  }
+  const out=document.getElementById("quizResult");
+  if(attempted<4){
+    out.textContent=`You answered ${attempted}/4. Please answer all four questions to check your score.`;
+  }else{
+    out.textContent=`Your score: ${score}/4. ${score===4?"Excellent work!":"Review the explanations and try again."}`;
+  }
+});
+</script>
+</body>
+</html>

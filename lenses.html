@@ -1,0 +1,543 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RayLab | Lenses & Image Formation</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root{
+  --blue:#2563eb;--navy:#10264a;--sky:#eaf3ff;
+  --ink:#182a45;--muted:#63748b;--line:#dce7f4;
+  --white:#fff;--green:#13856c;--orange:#f59e0b;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#f5f8fd;color:var(--ink);
+font-family:'DM Sans',sans-serif;line-height:1.6}
+button,input,select{font:inherit}
+button{cursor:pointer}
+nav{height:72px;background:#fff;border-bottom:1px solid var(--line);
+display:flex;align-items:center;justify-content:space-between;padding:0 7%;
+position:sticky;top:0;z-index:20}
+.logo{font-family:'Space Grotesk';font-size:24px;font-weight:700;color:var(--navy)}
+.logo span{color:var(--blue)}
+nav a{color:var(--muted);text-decoration:none;font-size:14px;margin-left:22px}
+nav a:hover{color:var(--blue)}
+.hero{padding:68px 7% 52px;background:linear-gradient(120deg,#edf5ff,#fff 65%);
+border-bottom:1px solid var(--line)}
+.eyebrow{color:var(--blue);font-size:12px;letter-spacing:2px;font-weight:700}
+h1,h2,h3{font-family:'Space Grotesk',sans-serif;line-height:1.2}
+h1{font-size:clamp(38px,5vw,62px);max-width:800px;margin:14px 0}
+h1 span{color:var(--blue)}
+.hero p{max-width:670px;color:var(--muted);font-size:17px}
+.tags{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}
+.tag{background:white;border:1px solid var(--line);padding:7px 12px;
+border-radius:30px;font-size:12px;color:#40536d}
+main{max-width:1250px;margin:auto;padding:35px 22px 75px}
+.section-head{margin:45px 0 20px}
+.section-head h2{font-size:30px;margin:0 0 8px}
+.section-head p{color:var(--muted);margin:0}
+.card{background:white;border:1px solid var(--line);border-radius:20px;
+padding:24px;box-shadow:0 8px 28px #183c6910}
+.sim-layout{display:grid;grid-template-columns:300px 1fr;gap:18px;align-items:stretch}
+.controls h3{margin:0 0 6px;font-size:19px}
+.small{font-size:13px;color:var(--muted)}
+.field{margin:21px 0}
+.field label{display:flex;justify-content:space-between;gap:8px;font-weight:600;font-size:14px}
+.value{color:var(--blue);font-weight:700;white-space:nowrap}
+input[type=range]{width:100%;accent-color:var(--blue);margin-top:12px}
+.switches{display:flex;gap:8px;margin:16px 0}
+.switch{flex:1;padding:11px 6px;border:1px solid var(--line);background:white;
+border-radius:10px;color:var(--ink);font-weight:700}
+.switch.active{background:var(--blue);color:white;border-color:var(--blue)}
+.primary{background:var(--blue);color:white;border:0;padding:12px 16px;
+border-radius:11px;font-weight:700}
+.secondary{background:#edf4ff;color:var(--blue);border:1px solid #d6e6ff;
+padding:11px 15px;border-radius:11px;font-weight:700}
+.full{width:100%}
+.diagram-card{min-width:0;padding:16px}
+.diagram-top{display:flex;align-items:center;justify-content:space-between;gap:10px;
+flex-wrap:wrap;padding:4px 8px 12px}
+.diagram-top strong{font-family:'Space Grotesk';font-size:17px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px}
+svg{width:100%;height:auto;display:block;background:#fbfdff;border:1px solid #e8eff8;border-radius:14px}
+svg text{font-family:'DM Sans',sans-serif}
+.diagram-note{font-size:12px;color:var(--muted);padding:10px 6px 0}
+.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+.metric{padding:15px;border-radius:14px;background:#f5f9ff;border:1px solid #e4edf9}
+.metric .label{font-size:12px;color:var(--muted)}
+.metric .number{font-family:'Space Grotesk';font-size:21px;font-weight:700;margin-top:5px}
+.metric .sub{font-size:11px;color:var(--muted)}
+.verdict{margin-top:15px;padding:16px 18px;border-radius:14px;background:#edf8f5;
+border:1px solid #cceee3;color:#126a57}
+.verdict strong{display:block;margin-bottom:4px}
+.verdict p{margin:0;font-size:14px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.info-card h3{margin:0 0 10px}
+.formula{background:#f2f7ff;padding:14px;border-radius:12px;font-size:19px;
+font-weight:700;color:var(--navy);text-align:center;margin:12px 0}
+.info-card p,.info-card li{font-size:14px;color:var(--muted)}
+.info-card ul{padding-left:20px}
+.note{background:#fff8e8;border:1px solid #f5dfad;padding:14px 16px;border-radius:12px;
+font-size:13px;color:#79551b;margin-top:14px}
+.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.case{border:1px solid var(--line);border-radius:16px;background:white;
+padding:17px;transition:.2s}
+.case:hover{transform:translateY(-3px);box-shadow:0 10px 22px #1c477b10}
+.case .num{font-size:11px;color:var(--blue);font-weight:700;letter-spacing:1px}
+.case h3{font-size:17px;margin:8px 0}
+.case p{font-size:13px;color:var(--muted);margin:6px 0}
+.pill{display:inline-block;background:#edf4ff;color:#2455a4;border-radius:20px;
+font-size:11px;padding:5px 9px;font-weight:700;margin-top:7px}
+.case button{margin-top:12px}
+.challenge{background:linear-gradient(135deg,#12294e,#204b86);color:white;border-radius:20px;padding:28px}
+.challenge h2{margin-top:0}
+.challenge p{color:#d3e1f7}
+.challenge .formula{background:#fff;color:var(--navy)}
+.quiz-q{border:1px solid var(--line);border-radius:15px;padding:18px;margin:13px 0}
+.quiz-q h3{font-size:16px;margin:0 0 12px}
+.option{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);
+padding:11px 13px;border-radius:10px;margin:7px 0;color:var(--ink)}
+.option:hover{border-color:var(--blue);background:#f5f9ff}
+.option.correct{background:#e6f8f0;border-color:#68cba7}
+.option.wrong{background:#fff0ee;border-color:#ef9b92}
+.feedback{font-size:13px;margin-top:8px;color:var(--muted)}
+footer{text-align:center;padding:28px;background:#fff;border-top:1px solid var(--line);
+color:var(--muted);font-size:13px}
+@media(max-width:900px){
+ .sim-layout{grid-template-columns:1fr}
+ .controls{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
+ .controls h3,.controls>.small,.switches,.full{grid-column:1/-1}
+ .case-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+ nav{padding:0 5%;height:62px}nav a{margin-left:10px;font-size:12px}
+ nav a:nth-child(2){display:none}
+ .hero{padding:45px 6% 38px}
+ main{padding:20px 13px 50px}
+ .card{padding:16px}
+ .controls{display:block}
+ .result-grid{grid-template-columns:repeat(2,1fr)}
+ .grid-2,.case-grid{grid-template-columns:1fr}
+ .section-head h2{font-size:26px}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">Ray<span>Lab</span></div>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="refraction.html">Refraction</a>
+    <a href="#simulator">Lens Lab</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="eyebrow">NCERT PHYSICS · RAY OPTICS</div>
+  <h1>Lenses & <span>Image Formation</span></h1>
+  <p>Move the object. Change the lens. Watch light reveal where the image forms. Welcome to your interactive lens laboratory!</p>
+  <div class="tags">
+    <span class="tag">🔎 Convex & concave lenses</span>
+    <span class="tag">✦ Live ray diagrams</span>
+    <span class="tag">📐 Lens formula</span>
+    <span class="tag">🎯 Image prediction challenge</span>
+  </div>
+</header>
+
+<main>
+  <div class="section-head" id="simulator">
+    <div class="eyebrow">01 · EXPERIMENT</div>
+    <h2>Your virtual lens laboratory</h2>
+    <p>Change the settings and observe the image. The calculations and diagram update automatically.</p>
+  </div>
+
+  <div class="sim-layout">
+    <section class="card controls">
+      <h3>Build your experiment</h3>
+      <p class="small">Start with a convex lens, then try a concave lens.</p>
+
+      <div class="field">
+        <label>Choose a lens</label>
+        <div class="switches">
+          <button class="switch active" id="convexBtn" onclick="setLens('convex')">Convex</button>
+          <button class="switch" id="concaveBtn" onclick="setLens('concave')">Concave</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="objectDist">Object distance <span class="value" id="uVal">40 cm</span></label>
+        <input id="objectDist" type="range" min="10" max="100" value="40" step="1">
+        <div class="small">Move the object closer to or farther from the lens.</div>
+      </div>
+
+      <div class="field">
+        <label for="focal">Focal length <span class="value" id="fVal">20 cm</span></label>
+        <input id="focal" type="range" min="10" max="30" value="20" step="1">
+        <div class="small">Change the strength of the lens.</div>
+      </div>
+
+      <div class="field">
+        <label for="objectHeight">Object height <span class="value" id="hVal">5 cm</span></label>
+        <input id="objectHeight" type="range" min="2" max="8" value="5" step="1">
+      </div>
+
+      <button class="secondary full" onclick="resetLab()">↺ Reset experiment</button>
+      <div class="note">Convention used here: object distance is shown as a positive magnitude. The thin-lens calculation uses <b>1/f = 1/v + 1/u</b>, with signed focal length and signed image distance.</div>
+    </section>
+
+    <section class="card diagram-card">
+      <div class="diagram-top">
+        <strong id="diagramTitle">Convex lens · Ray diagram</strong>
+        <div class="legend">
+          <span><i class="dot" style="background:#2563eb"></i>Incident ray</span>
+          <span><i class="dot" style="background:#e58a16"></i>Refracted ray</span>
+          <span><i class="dot" style="background:#9ba8ba"></i>Virtual extension</span>
+        </div>
+      </div>
+      <svg id="rayDiagram" viewBox="0 0 900 430" role="img" aria-label="Interactive lens ray diagram"></svg>
+      <div class="diagram-note">Schematic illustration, not to scale in every case. Dashed lines show backward extensions of rays where relevant.</div>
+    </section>
+  </div>
+
+  <div class="result-grid">
+    <div class="metric"><div class="label">Image distance (v)</div><div class="number" id="vResult">40 cm</div><div class="sub">From the optical centre</div></div>
+    <div class="metric"><div class="label">Magnification (m)</div><div class="number" id="mResult">−1.0</div><div class="sub">Image height ÷ object height</div></div>
+    <div class="metric"><div class="label">Image size</div><div class="number" id="sizeResult">5 cm</div><div class="sub">Absolute height</div></div>
+    <div class="metric"><div class="label">Image nature</div><div class="number" id="natureResult">Real</div><div class="sub" id="orientationResult">Inverted</div></div>
+  </div>
+  <div class="verdict" id="verdict"><strong>Image formed!</strong><p>Change the sliders to explore how image formation changes.</p></div>
+
+  <div class="section-head">
+    <div class="eyebrow">02 · LEARN THE RULES</div>
+    <h2>How do lenses form images?</h2>
+    <p>A lens refracts light. The image appears where refracted rays meet, or where their backward extensions appear to meet.</p>
+  </div>
+
+  <div class="grid-2">
+    <article class="card info-card">
+      <h3>🔵 Convex lens</h3>
+      <p>A convex lens is thicker at the centre than at the edges. In air, it is a converging lens: parallel rays converge towards the principal focus.</p>
+      <ul>
+        <li>For an object beyond F, it generally forms a real, inverted image.</li>
+        <li>Between F and the optical centre, it forms a virtual, erect, magnified image.</li>
+        <li>At F, the emerging rays are parallel and the image is at infinity in the ideal thin-lens model.</li>
+      </ul>
+      <div class="formula">f &gt; 0</div>
+    </article>
+    <article class="card info-card">
+      <h3>🟠 Concave lens</h3>
+      <p>A concave lens is thinner at the centre than at the edges. In air, it is a diverging lens: parallel rays spread out as if they came from its principal focus.</p>
+      <ul>
+        <li>For a real object, it forms a virtual image.</li>
+        <li>The image is erect and diminished.</li>
+        <li>The image lies between the optical centre and the focus on the object's side.</li>
+      </ul>
+      <div class="formula">f &lt; 0</div>
+    </article>
+  </div>
+
+  <div class="section-head">
+    <div class="eyebrow">03 · THE EQUATIONS</div>
+    <h2>Three formulas worth remembering</h2>
+  </div>
+  <div class="grid-2">
+    <article class="card info-card">
+      <h3>Thin lens formula</h3>
+      <div class="formula">1/f = 1/v − 1/u</div>
+      <p>This is the formula using the Cartesian sign convention, where the object distance u for a real object is negative.</p>
+      <p>In this simulator, u is entered as a positive distance magnitude, so the equivalent working formula is:</p>
+      <div class="formula">1/f = 1/v + 1/u</div>
+    </article>
+    <article class="card info-card">
+      <h3>Magnification</h3>
+      <div class="formula">m = hᵢ/hₒ = v/u</div>
+      <p>With signed Cartesian distances, magnification is v/u. In the simulator's positive object-distance format, it is calculated as <b>m = −v/u</b>.</p>
+      <ul>
+        <li>m &gt; 0: erect image</li>
+        <li>m &lt; 0: inverted image</li>
+        <li>|m| &gt; 1: enlarged; |m| &lt; 1: diminished</li>
+      </ul>
+    </article>
+  </div>
+  <div class="card info-card" style="margin-top:16px">
+    <h3>Power of a lens</h3>
+    <div class="formula">P = 1/f (in metres)</div>
+    <p>Power is measured in dioptres (D). A converging convex lens has positive power; a diverging concave lens has negative power.</p>
+    <p><b>Example:</b> A convex lens with f = +0.20 m has power P = 1/0.20 = +5 D.</p>
+  </div>
+
+  <div class="section-head" id="cases">
+    <div class="eyebrow">04 · NCERT IMAGE FORMATION</div>
+    <h2>The six cases of a convex lens</h2>
+    <p>Choose a case to load a matching setup in the simulator. These are ideal thin-lens results.</p>
+  </div>
+  <div class="case-grid">
+    <article class="case"><div class="num">CASE 01</div><h3>Object at infinity</h3><p>Image at F₂</p><p>Real, inverted, highly diminished (point-sized in the ideal limit).</p><span class="pill">At focus</span><br><button class="secondary" onclick="loadCase(100,20)">Try this case</button></article>
+    <article class="case"><div class="num">CASE 02</div><h3>Beyond 2F₁</h3><p>Image between F₂ and 2F₂</p><p>Real, inverted, diminished.</p><span class="pill">Smaller image</span><br><button class="secondary" onclick="loadCase(60,20)">Try this case</button></article>
+    <article class="case"><div class="num">CASE 03</div><h3>At 2F₁</h3><p>Image at 2F₂</p><p>Real, inverted, same size.</p><span class="pill">Same size</span><br><button class="secondary" onclick="loadCase(40,20)">Try this case</button></article>
+    <article class="case"><div class="num">CASE 04</div><h3>Between F₁ and 2F₁</h3><p>Image beyond 2F₂</p><p>Real, inverted, enlarged.</p><span class="pill">Larger image</span><br><button class="secondary" onclick="loadCase(30,20)">Try this case</button></article>
+    <article class="case"><div class="num">CASE 05</div><h3>At F₁</h3><p>Image at infinity</p><p>Refracted rays are parallel; no finite image distance in the ideal model.</p><span class="pill">Parallel rays</span><br><button class="secondary" onclick="loadCase(20,20)">Try this case</button></article>
+    <article class="case"><div class="num">CASE 06</div><h3>Between F₁ and lens</h3><p>Image on the object's side</p><p>Virtual, erect, enlarged.</p><span class="pill">Virtual image</span><br><button class="secondary" onclick="loadCase(15,20)">Try this case</button></article>
+  </div>
+
+  <div class="section-head">
+    <div class="eyebrow">05 · TEST YOUR INTUITION</div>
+    <h2>Predict before you reveal</h2>
+    <p>Think about the image first. Then check your prediction.</p>
+  </div>
+  <div class="challenge">
+    <h2>🔮 The image prediction challenge</h2>
+    <p>A convex lens has focal length 20 cm. An object is placed 10 cm from the lens. What kind of image will it form?</p>
+    <div id="challengeOptions" class="grid-2">
+      <button class="option" onclick="answerChallenge(this,false)">A. Real, inverted and diminished</button>
+      <button class="option" onclick="answerChallenge(this,true)">B. Virtual, erect and enlarged</button>
+      <button class="option" onclick="answerChallenge(this,false)">C. Real, inverted and same size</button>
+      <button class="option" onclick="answerChallenge(this,false)">D. Virtual, inverted and diminished</button>
+    </div>
+    <p id="challengeFeedback" aria-live="polite"></p>
+    <button class="primary" onclick="loadCase(10,20);document.getElementById('simulator').scrollIntoView({behavior:'smooth'})">See it in the simulator ↗</button>
+  </div>
+
+  <div class="section-head">
+    <div class="eyebrow">06 · QUICK CHECK</div>
+    <h2>Mini quiz</h2>
+    <p>Answer all four questions and check your score.</p>
+  </div>
+  <div class="card">
+    <div class="quiz-q" data-answer="1" data-explain="A concave lens diverges light and has negative focal length in the usual Cartesian convention.">
+      <h3>1. Which lens has negative focal length in air?</h3>
+      <button class="option">A. Convex lens</button><button class="option">B. Concave lens</button><button class="option">C. Both always</button>
+      <div class="feedback"></div>
+    </div>
+    <div class="quiz-q" data-answer="2" data-explain="At 2F₁, a convex lens forms a real, inverted image at 2F₂ of the same size.">
+      <h3>2. An object at 2F₁ of a convex lens forms an image that is…</h3>
+      <button class="option">A. Virtual and enlarged</button><button class="option">B. At F₂ and diminished</button><button class="option">C. At 2F₂ and same size</button>
+      <div class="feedback"></div>
+    </div>
+    <div class="quiz-q" data-answer="0" data-explain="A positive magnification means the image is erect under the sign convention used here.">
+      <h3>3. What does positive magnification tell you?</h3>
+      <button class="option">A. The image is erect</button><button class="option">B. The image is always real</button><button class="option">C. The image is always enlarged</button>
+      <div class="feedback"></div>
+    </div>
+    <div class="quiz-q" data-answer="2" data-explain="Power in dioptres is the reciprocal of focal length in metres: P = 1/f.">
+      <h3>4. A lens has focal length +0.5 m. Its power is…</h3>
+      <button class="option">A. +0.5 D</button><button class="option">B. −2 D</button><button class="option">C. +2 D</button>
+      <div class="feedback"></div>
+    </div>
+    <button class="primary" onclick="gradeQuiz()">Check my score</button>
+    <button class="secondary" onclick="resetQuiz()">Try again</button>
+    <h3 id="quizScore" aria-live="polite"></h3>
+  </div>
+</main>
+
+<footer>RayLab · Explore physics by experimenting · NCERT-aligned learning</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+let lens = 'convex';
+const W=900,H=430,CX=450,CY=215,S=3;
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+
+function setLens(type){
+  lens=type;
+  $('convexBtn').classList.toggle('active',type==='convex');
+  $('concaveBtn').classList.toggle('active',type==='concave');
+  update();
+}
+['objectDist','focal','objectHeight'].forEach(id=>$(id).addEventListener('input',update));
+
+function fmt(n){
+  if(!Number.isFinite(n)) return '∞';
+  if(Math.abs(n)>999) return '∞';
+  return (Math.round(n*10)/10).toString();
+}
+function update(){
+  const u=+$('objectDist').value;
+  const fmag=+$('focal').value;
+  const h=+$('objectHeight').value;
+  const f=lens==='convex'?fmag:-fmag;
+
+  $('uVal').textContent=u+' cm';
+  $('fVal').textContent=fmag+' cm';
+  $('hVal').textContent=h+' cm';
+  $('diagramTitle').textContent=(lens==='convex'?'Convex':'Concave')+' lens · Ray diagram';
+
+  const denom=u-f;
+  let v, m, hi;
+  if(Math.abs(denom)<0.0001){v=Infinity;m=-Infinity;hi=Infinity;}
+  else{v=f*u/denom;m=-v/u;hi=m*h;}
+
+  $('vResult').textContent=Number.isFinite(v)?fmt(v)+' cm':'∞';
+  $('mResult').textContent=Number.isFinite(m)?fmt(m):'∞';
+  $('sizeResult').textContent=Number.isFinite(hi)?fmt(Math.abs(hi))+' cm':'∞';
+
+  let nature,orientation,description;
+  if(!Number.isFinite(v)){
+    nature='At infinity';orientation='No finite image';
+    description='The object is at the principal focus. In the ideal thin-lens model, the emergent rays are parallel and the image is at infinity.';
+  }else if(v>0){
+    nature='Real';orientation='Inverted';
+    description='The refracted rays meet on the opposite side of the lens, so the image is real and inverted.';
+  }else{
+    nature='Virtual';orientation='Erect';
+    description='The rays spread apart after the lens. Their backward extensions meet on the object side, forming a virtual, erect image.';
+  }
+  $('natureResult').textContent=nature;
+  $('orientationResult').textContent=orientation;
+
+  if(Number.isFinite(v)){
+    const size=Math.abs(m);
+    let scaleText=size>1.03?'enlarged':size<0.97?'diminished':'the same size';
+    description+=' The image is '+scaleText+'.';
+  }
+  $('verdict').innerHTML='<strong>'+nature+' image · '+orientation+'</strong><p>'+description+'</p>';
+  draw(u,f,h,v,hi);
+}
+
+function line(x1,y1,x2,y2,color,width=2,dash=''){
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${width}" ${dash?`stroke-dasharray="${dash}"`:''} stroke-linecap="round"/>`;
+}
+function txt(x,y,t,color='#52647d',size=13,anchor='middle'){
+  return `<text x="${x}" y="${y}" fill="${color}" font-size="${size}" text-anchor="${anchor}">${t}</text>`;
+}
+function draw(u,f,h,v,hi){
+  const objX=CX-u*S;
+  const objY=CY-h*10;
+  const fpx=Math.abs(f)*S;
+  const f1=CX-f*S, f2=CX+f*S;
+  let out='';
+
+  // Soft grid and principal axis
+  for(let x=30;x<W;x+=30) out+=line(x,25,x,H-25,'#eef3fa',1);
+  for(let y=35;y<H;y+=30) out+=line(20,y,W-20,y,'#eef3fa',1);
+  out+=line(25,CY,875,CY,'#7e8da4',1.5);
+  out+=`<path d="M 867 ${CY-5} L 877 ${CY} L 867 ${CY+5}" fill="none" stroke="#7e8da4" stroke-width="1.5"/>`;
+  out+=txt(860,CY-10,'Principal axis','#687991',12,'end');
+
+  // Lens body
+  if(lens==='convex'){
+    out+=`<path d="M ${CX} 55 Q ${CX+27} 110 ${CX+27} ${CY} Q ${CX+27} 320 ${CX} 375 Q ${CX-27} 320 ${CX-27} ${CY} Q ${CX-27} 110 ${CX} 55 Z" fill="#b8dcff" fill-opacity=".72" stroke="#438ddc" stroke-width="2"/>`;
+  }else{
+    out+=`<path d="M ${CX-15} 55 Q ${CX+18} 135 ${CX+18} ${CY} Q ${CX+18} 295 ${CX-15} 375 L ${CX+15} 375 Q ${CX-18} 295 ${CX-18} ${CY} Q ${CX-18} 135 ${CX+15} 55 Z" fill="#b8dcff" fill-opacity=".72" stroke="#438ddc" stroke-width="2"/>`;
+  }
+  out+=line(CX,55,CX,375,'#438ddc',1.3,'4 5');
+  out+=txt(CX,43,'Optical centre O','#2d67aa',13);
+  out+=txt(f1,395,'F₁','#2d67aa',14);
+  out+=txt(f2,395,'F₂','#2d67aa',14);
+  out+=txt(CX-2*f*S,414,'2F₁','#2d67aa',12);
+  out+=txt(CX+2*f*S,414,'2F₂','#2d67aa',12);
+
+  // Focal markers
+  [f1,f2].forEach(x=>{out+=`<circle cx="${x}" cy="${CY}" r="4" fill="#2563eb"/>`;});
+
+  // Object arrow
+  out+=line(objX,CY,objX,objY,'#2563eb',4);
+  out+=`<path d="M ${objX-6} ${objY+9} L ${objX} ${objY} L ${objX+6} ${objY+9}" fill="none" stroke="#2563eb" stroke-width="3"/>`;
+  out+=txt(objX,CY+22,'Object','#2563eb',13);
+
+  // Ray drawing uses the top of the object. Display endpoints are clipped to the diagram.
+  const endY=CY-h*10;
+  const rawImgX=Number.isFinite(v)?CX+v*S:(v>0?10000:-10000);
+  const rawImgY=Number.isFinite(hi)?CY-hi*10:(hi>0?-10000:10000);
+  const imgX=clamp(rawImgX,25,875), imgY=clamp(rawImgY,35,375);
+
+  // Ray 1: parallel to axis before lens. After lens its slope points toward the image.
+  out+=line(objX,endY,CX,endY,'#2563eb',2.5);
+  if(Number.isFinite(v)){
+    const targetX=rawImgX;
+    const targetY=rawImgY;
+    const boundedX=clamp(targetX,25,875);
+    const boundedY=CY+(endY-CY)*(1+(boundedX-CX)/(targetX-CX || 1));
+    if(v>0){
+      out+=line(CX,endY,boundedX,clamp(boundedY,25,405),'#e58a16',2.5);
+    }else{
+      out+=line(CX,endY,boundedX,clamp(boundedY,25,405),'#e58a16',2.5);
+      out+=line(CX,endY,clamp(CX+(CX-objX)*2,25,875),clamp(endY+(endY-CY)*(Math.abs(CX-objX)*2/(Math.abs(CX-objX)+1)),25,405),'#a4afbe',1.5,'6 5');
+    }
+  }else{
+    const direction=lens==='convex'?1:-1;
+    out+=line(CX,endY,875,endY+direction*140,'#e58a16',2.5);
+  }
+
+  // Ray 2: through optical centre, travels straight.
+  const ray2EndX=875;
+  const ray2EndY=CY+(CY-endY)*(ray2EndX- CX)/(CX-objX);
+  out+=line(objX,endY,ray2EndX,clamp(ray2EndY,25,405),'#2563eb',2,'');
+  if(Number.isFinite(v)&&v<0){
+    out+=line(CX,endY,clamp(rawImgX,25,875),clamp(rawImgY,25,405),'#9ba8ba',1.8,'6 5');
+  }
+
+  // Image arrow when its position is visible.
+  if(Number.isFinite(v)&&rawImgX>25&&rawImgX<875&&rawImgY>25&&rawImgY<405){
+    const color=v>0?'#e58a16':'#a66bd6';
+    out+=line(rawImgX,CY,rawImgX,rawImgY,color,4);
+    if(rawImgY<CY) out+=`<path d="M ${rawImgX-6} ${rawImgY+9} L ${rawImgX} ${rawImgY} L ${rawImgX+6} ${rawImgY+9}" fill="none" stroke="${color}" stroke-width="3"/>`;
+    else out+=`<path d="M ${rawImgX-6} ${rawImgY-9} L ${rawImgX} ${rawImgY} L ${rawImgX+6} ${rawImgY-9}" fill="none" stroke="${color}" stroke-width="3"/>`;
+    out+=txt(rawImgX,Math.max(20,Math.min(410,rawImgY-12)),v>0?'Real image':'Virtual image',color,12);
+  }else if(Number.isFinite(v)){
+    out+=txt(CX+110,75,'Image lies outside the view','#64748b',13);
+  }else{
+    out+=txt(CX+110,75,'Image at infinity','#64748b',13);
+  }
+  $('rayDiagram').innerHTML=out;
+}
+
+function resetLab(){
+  $('objectDist').value=40;$('focal').value=20;$('objectHeight').value=5;
+  setLens('convex');
+}
+function loadCase(u,f){
+  $('objectDist').value=u;$('focal').value=f;
+  setLens('convex');$('simulator').scrollIntoView({behavior:'smooth'});
+}
+function answerChallenge(button,correct){
+  document.querySelectorAll('#challengeOptions .option').forEach(b=>{
+    b.classList.remove('correct','wrong');
+  });
+  button.classList.add(correct?'correct':'wrong');
+  $('challengeFeedback').textContent=correct
+    ?'Correct! Since u < f, the convex lens forms a virtual, erect, enlarged image on the object side.'
+    :'Not quite. Here u = 10 cm and f = 20 cm, so the object lies inside the focal length. Try again or inspect the simulator.';
+}
+document.querySelectorAll('.quiz-q').forEach(q=>{
+  q.querySelectorAll('.option').forEach((b,i)=>{
+    b.addEventListener('click',()=>{
+      q.dataset.selected=i;
+      q.querySelectorAll('.option').forEach(x=>x.classList.remove('correct','wrong'));
+      b.classList.add('correct');
+    });
+  });
+});
+function gradeQuiz(){
+  let score=0;
+  document.querySelectorAll('.quiz-q').forEach(q=>{
+    const selected=Number(q.dataset.selected);
+    const answer=Number(q.dataset.answer);
+    const buttons=q.querySelectorAll('.option');
+    buttons.forEach((b,i)=>{
+      b.classList.remove('correct','wrong');
+      if(i===answer)b.classList.add('correct');
+      if(i===selected&&selected!==answer)b.classList.add('wrong');
+    });
+    if(selected===answer)score++;
+    q.querySelector('.feedback').textContent=(selected===answer?'Correct! ':'Review: ')+q.dataset.explain;
+  });
+  $('quizScore').textContent='Your score: '+score+' / 4 '+(score===4?'🎉 Excellent work!':'— Review the explanations and try again.');
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz-q').forEach(q=>{
+    delete q.dataset.selected;
+    q.querySelectorAll('.option').forEach(b=>b.classList.remove('correct','wrong'));
+    q.querySelector('.feedback').textContent='';
+  });
+  $('quizScore').textContent='';
+}
+update();
+</script>
+</body>
+</html>

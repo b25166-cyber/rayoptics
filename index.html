@@ -1,0 +1,541 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ray Optics | Explore Light</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <span class="logo-icon">◉</span>
+            Ray<span>Lab</span>
+        </a>
+
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#topics">Explore Topics</a>
+            <a href="#about">About</a>
+        </div>
+
+        <a href="#topics" class="nav-button">Start Exploring ↗</a>
+    </nav>
+
+
+    <!-- Hero Section -->
+    <main>
+        <section class="hero" id="home">
+
+            <div class="hero-content">
+                <div class="eyebrow">
+                    <span class="status-dot"></span>
+                    CLASS 12 PHYSICS · NCERT-BASED
+                </div>
+
+                <h1>
+                    Discover the<br>
+                    <span>path of light.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Why do mirrors form images? How do lenses help us see?
+                    Explore the fascinating world of ray optics through
+                    interactive experiments, visual explanations and physics
+                    you can actually experience.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="#topics" class="primary-button">
+                        Explore the Lab <span>↗</span>
+                    </a>
+                    <a href="#about" class="secondary-button">
+                        Discover Ray Optics
+                    </a>
+                </div>
+
+                <div class="hero-stats">
+                    <div>
+                        <strong>05</strong>
+                        <span>Learning modules</span>
+                    </div>
+
+                    <div class="stat-divider"></div>
+
+                    <div>
+                        <strong>∞</strong>
+                        <span>Ways to explore</span>
+                    </div>
+
+                    <div class="stat-divider"></div>
+
+                    <div>
+                        <strong>01</strong>
+                        <span>Curious mind needed</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visual illustration -->
+            <div class="hero-visual">
+                <div class="visual-glow"></div>
+
+                <div class="orbit orbit-one"></div>
+                <div class="orbit orbit-two"></div>
+
+                <div class="optics-label label-top">
+                    <span class="label-dot"></span>
+                    LIGHT IN MOTION
+                </div>
+
+                <svg class="optics-art"
+                     viewBox="0 0 500 440"
+                     xmlns="http://www.w3.org/2000/svg"
+                     role="img"
+                     aria-label="Illustration of light rays passing through a lens">
+
+                    <defs>
+                        <linearGradient id="lensGradient"
+                            x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#c6d8ff"
+                                  stop-opacity="0.85"/>
+                            <stop offset="50%" stop-color="#8c9cff"
+                                  stop-opacity="0.35"/>
+                            <stop offset="100%" stop-color="#d6c8ff"
+                                  stop-opacity="0.75"/>
+                        </linearGradient>
+
+                        <linearGradient id="rayGradient"
+                            x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#6bdcff"
+                                  stop-opacity="0.15"/>
+                            <stop offset="50%" stop-color="#a5b4ff"/>
+                            <stop offset="100%" stop-color="#d4b5ff"
+                                  stop-opacity="0.9"/>
+                        </linearGradient>
+
+                        <filter id="rayGlow">
+                            <feGaussianBlur stdDeviation="3"/>
+                        </filter>
+                    </defs>
+
+                    <!-- Light source -->
+                    <circle cx="65" cy="220" r="24"
+                            fill="#8ce8ff" opacity="0.12"/>
+                    <circle cx="65" cy="220" r="12"
+                            fill="#a8efff" opacity="0.25"/>
+                    <circle cx="65" cy="220" r="5"
+                            fill="#d7faff"/>
+
+                    <!-- Incoming light rays -->
+                    <g stroke="url(#rayGradient)"
+                       stroke-width="2.5" fill="none">
+                        <path d="M 65 220 L 205 130"/>
+                        <path d="M 65 220 L 205 175"/>
+                        <path d="M 65 220 L 205 220"/>
+                        <path d="M 65 220 L 205 265"/>
+                        <path d="M 65 220 L 205 310"/>
+                    </g>
+
+                    <!-- Focal point -->
+                    <circle cx="430" cy="220" r="30"
+                            fill="#bba6ff" opacity="0.08"/>
+
+                    <!-- Convex lens -->
+                    <path d="M 225 85
+                             C 170 145, 170 295, 225 355
+                             C 280 295, 280 145, 225 85 Z"
+                          fill="url(#lensGradient)"
+                          stroke="#d1d5ff"
+                          stroke-width="1.5"/>
+
+                    <path d="M 225 90
+                             C 185 155, 185 285, 225 350"
+                          fill="none" stroke="#ffffff"
+                          stroke-opacity="0.45"/>
+
+                    <!-- Refracted rays -->
+                    <g stroke="#c9b6ff"
+                       stroke-width="2.5" fill="none">
+                        <path d="M 225 130 L 430 220"/>
+                        <path d="M 225 175 L 430 220"/>
+                        <path d="M 225 220 L 430 220"/>
+                        <path d="M 225 265 L 430 220"/>
+                        <path d="M 225 310 L 430 220"/>
+                    </g>
+
+                    <!-- Glow on the central ray -->
+                    <path d="M 65 220 L 430 220"
+                          stroke="#8de9ff" stroke-width="8"
+                          opacity="0.12" filter="url(#rayGlow)"/>
+
+                    <path d="M 65 220 L 430 220"
+                          stroke="#d6f8ff" stroke-width="1.5"
+                          stroke-dasharray="5 7" opacity="0.9"/>
+
+                    <!-- Focal point -->
+                    <circle cx="430" cy="220" r="8"
+                            fill="#d6c5ff" opacity="0.25"/>
+                    <circle cx="430" cy="220" r="4"
+                            fill="#f1eaff"/>
+
+                    <!-- Labels -->
+                    <g fill="#d9def7"
+                       font-family="DM Sans, sans-serif"
+                       font-size="12">
+                        <text x="42" y="270">Light source</text>
+                        <text x="192" y="390">Convex lens</text>
+                        <text x="398" y="260">Focus</text>
+                    </g>
+                </svg>
+
+                <div class="visual-caption">
+                    <span class="caption-icon">✳</span>
+                    <div>
+                        <strong>Light changes direction.</strong>
+                        <span>Physics makes it make sense.</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- Introduction -->
+        <section class="intro-section" id="about">
+
+            <div class="section-heading">
+                <span class="section-tag">THE BIG IDEA</span>
+                <h2>Understand light.<br><span>See the world differently.</span></h2>
+            </div>
+
+            <div class="intro-content">
+                <p>
+                    Ray optics studies how light travels and changes direction
+                    when it encounters mirrors, lenses and different materials.
+                    Instead of memorising diagrams, we'll explore how those
+                    diagrams come to life.
+                </p>
+
+                <div class="idea-pills">
+                    <span>Reflection</span>
+                    <span>Refraction</span>
+                    <span>Image formation</span>
+                    <span>Optical instruments</span>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- Topic Cards -->
+        <section class="topics-section" id="topics">
+
+            <div class="topics-header">
+                <div>
+                    <span class="section-tag">YOUR LEARNING PATH</span>
+                    <h2>Choose your <span>experiment.</span></h2>
+                </div>
+
+                <p>
+                    Start with the basics, experiment with the visuals,
+                    and build your understanding one concept at a time.
+                </p>
+            </div>
+
+
+            <div class="topic-grid">
+
+                <!-- Topic 1 -->
+                <a href="mirrors.html" class="topic-card">
+                    <div class="card-top">
+                        <span class="topic-number">01 / REFLECTION</span>
+                        <span class="card-arrow">↗</span>
+                    </div>
+
+                    <div class="topic-art mirror-art">
+                        <svg viewBox="0 0 240 130"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="mirrorLight"
+                                    x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#91e5ff"/>
+                                    <stop offset="100%" stop-color="#b8a9ff"/>
+                                </linearGradient>
+                            </defs>
+
+                            <path d="M 25 105 L 120 20 L 215 105"
+                                  fill="none" stroke="url(#mirrorLight)"
+                                  stroke-width="2.5"/>
+
+                            <path d="M 120 15 Q 155 65 120 115"
+                                  fill="none" stroke="#d5ddff"
+                                  stroke-width="5"
+                                  stroke-linecap="round"/>
+
+                            <path d="M 120 20 L 120 115"
+                                  stroke="#ffffff" stroke-opacity="0.3"
+                                  stroke-dasharray="4 5"/>
+
+                            <circle cx="120" cy="65" r="5"
+                                    fill="#ffffff"/>
+                        </svg>
+                    </div>
+
+                    <h3>Reflection & Mirrors</h3>
+                    <p>
+                        Explore spherical mirrors, image formation,
+                        magnification and the mirror formula.
+                    </p>
+
+                    <div class="card-footer">
+                        <span>Explore reflection</span>
+                        <span>→</span>
+                    </div>
+                </a>
+
+
+                <!-- Topic 2 -->
+                <a href="refraction.html" class="topic-card">
+                    <div class="card-top">
+                        <span class="topic-number">02 / REFRACTION</span>
+                        <span class="card-arrow">↗</span>
+                    </div>
+
+                    <div class="topic-art refraction-art">
+                        <svg viewBox="0 0 240 130"
+                             xmlns="http://www.w3.org/2000/svg">
+
+                            <rect x="20" y="66" width="200" height="48"
+                                  rx="8" fill="#7bbcff"
+                                  fill-opacity="0.13"/>
+
+                            <path d="M 20 66 H 220"
+                                  stroke="#9acfff" stroke-width="1.5"
+                                  stroke-dasharray="5 5"/>
+
+                            <path d="M 55 15 L 125 66 L 175 114"
+                                  fill="none" stroke="#b8b5ff"
+                                  stroke-width="2.5"/>
+
+                            <path d="M 55 15 L 125 66"
+                                  stroke="#b8f0ff" stroke-width="4"
+                                  stroke-opacity="0.25"/>
+
+                            <circle cx="125" cy="66" r="5"
+                                    fill="#ffffff"/>
+
+                            <path d="M 125 66 L 165 95"
+                                  stroke="#a6ecff" stroke-width="2"
+                                  stroke-dasharray="4 4"/>
+                        </svg>
+                    </div>
+
+                    <h3>Refraction of Light</h3>
+                    <p>
+                        Understand how light changes direction when
+                        it travels between different media.
+                    </p>
+
+                    <div class="card-footer">
+                        <span>Explore refraction</span>
+                        <span>→</span>
+                    </div>
+                </a>
+
+
+                <!-- Topic 3 -->
+                <a href="lenses.html" class="topic-card">
+                    <div class="card-top">
+                        <span class="topic-number">03 / LENSES</span>
+                        <span class="card-arrow">↗</span>
+                    </div>
+
+                    <div class="topic-art lens-art">
+                        <svg viewBox="0 0 240 130"
+                             xmlns="http://www.w3.org/2000/svg">
+
+                            <path d="M 120 12
+                                     C 75 40, 75 90, 120 118
+                                     C 165 90, 165 40, 120 12 Z"
+                                  fill="#b9c9ff" fill-opacity="0.23"
+                                  stroke="#c8d4ff" stroke-width="2"/>
+
+                            <path d="M 25 35 H 120 L 205 65"
+                                  fill="none" stroke="#a4e8ff"
+                                  stroke-width="2"/>
+
+                            <path d="M 25 65 H 120 H 205"
+                                  fill="none" stroke="#c8b5ff"
+                                  stroke-width="2"/>
+
+                            <path d="M 25 95 H 120 L 205 65"
+                                  fill="none" stroke="#a4e8ff"
+                                  stroke-width="2"/>
+
+                            <circle cx="205" cy="65" r="5"
+                                    fill="#ffffff"/>
+                        </svg>
+                    </div>
+
+                    <h3>Lenses & Image Formation</h3>
+                    <p>
+                        Investigate convex and concave lenses,
+                        image formation and lens power.
+                    </p>
+
+                    <div class="card-footer">
+                        <span>Explore lenses</span>
+                        <span>→</span>
+                    </div>
+                </a>
+
+
+                <!-- Topic 4 -->
+                <a href="prism.html" class="topic-card">
+                    <div class="card-top">
+                        <span class="topic-number">04 / PRISMS</span>
+                        <span class="card-arrow">↗</span>
+                    </div>
+
+                    <div class="topic-art prism-art">
+                        <svg viewBox="0 0 240 130"
+                             xmlns="http://www.w3.org/2000/svg">
+
+                            <path d="M 85 20 L 35 105 L 185 105 Z"
+                                  fill="#b5c5ff" fill-opacity="0.18"
+                                  stroke="#c9d3ff" stroke-width="2"/>
+
+                            <path d="M 10 65 L 65 65"
+                                  stroke="#fff0b5" stroke-width="3"/>
+
+                            <path d="M 65 65 L 115 65"
+                                  stroke="#fff0b5" stroke-width="3"/>
+
+                            <path d="M 115 65 L 185 40"
+                                  stroke="#ff9a9a" stroke-width="2"/>
+
+                            <path d="M 115 65 L 190 52"
+                                  stroke="#ffd49a" stroke-width="2"/>
+
+                            <path d="M 115 65 L 195 64"
+                                  stroke="#fff2a0" stroke-width="2"/>
+
+                            <path d="M 115 65 L 195 76"
+                                  stroke="#a8efbc" stroke-width="2"/>
+
+                            <path d="M 115 65 L 190 88"
+                                  stroke="#9dcaff" stroke-width="2"/>
+                        </svg>
+                    </div>
+
+                    <h3>Prisms & Dispersion</h3>
+                    <p>
+                        Discover how a prism deviates light
+                        and separates white light into colours.
+                    </p>
+
+                    <div class="card-footer">
+                        <span>Explore prisms</span>
+                        <span>→</span>
+                    </div>
+                </a>
+
+
+                <!-- Topic 5 -->
+                <a href="instruments.html" class="topic-card">
+                    <div class="card-top">
+                        <span class="topic-number">05 / APPLICATIONS</span>
+                        <span class="card-arrow">↗</span>
+                    </div>
+
+                    <div class="topic-art instruments-art">
+                        <svg viewBox="0 0 240 130"
+                             xmlns="http://www.w3.org/2000/svg">
+
+                            <circle cx="75" cy="65" r="35"
+                                    fill="#9dcaff" fill-opacity="0.12"
+                                    stroke="#b8d5ff" stroke-width="2"/>
+
+                            <circle cx="165" cy="65" r="25"
+                                    fill="#c5b5ff" fill-opacity="0.15"
+                                    stroke="#d3c5ff" stroke-width="2"/>
+
+                            <path d="M 30 65 H 50 M 100 65 H 140 M 190 65 H 215"
+                                  stroke="#bcecff" stroke-width="2"/>
+
+                            <path d="M 75 25 V 105 M 165 35 V 95"
+                                  stroke="#ffffff" stroke-opacity="0.4"
+                                  stroke-dasharray="4 4"/>
+
+                            <circle cx="75" cy="65" r="5"
+                                    fill="#ffffff"/>
+                            <circle cx="165" cy="65" r="4"
+                                    fill="#ffffff"/>
+                        </svg>
+                    </div>
+
+                    <h3>Optical Instruments</h3>
+                    <p>
+                        See how microscopes and telescopes use
+                        lenses to help us observe the world.
+                    </p>
+
+                    <div class="card-footer">
+                        <span>Explore instruments</span>
+                        <span>→</span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+
+        <!-- Learning note -->
+        <section class="learning-banner">
+            <div class="learning-symbol">✦</div>
+
+            <div>
+                <span class="section-tag">LEARN BY EXPLORING</span>
+                <h2>Don't just read physics.<br>
+                    <span>Experiment with it.</span>
+                </h2>
+                <p>
+                    Adjust values, follow light rays, observe images
+                    and connect the results to NCERT concepts.
+                </p>
+            </div>
+
+            <a href="#topics" class="primary-button">
+                Begin exploring ↗
+            </a>
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <a href="index.html" class="logo">
+            <span class="logo-icon">◉</span>
+            Ray<span>Lab</span>
+        </a>
+
+        <p>
+            An interactive learning space for Class 12 Physics.
+            Built around NCERT concepts.
+        </p>
+
+        <span class="footer-note">LEARN · EXPLORE · UNDERSTAND</span>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,496 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RayLab | Prism Lab</title>
+<style>
+:root{--blue:#0878f9;--navy:#102d63;--muted:#55749f;--line:#cce7ff;--pale:#eff8ff;--green:#16834b;--red:#c43d4b}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Arial,sans-serif;color:var(--navy);background:linear-gradient(135deg,#f5fbff,#eaf5ff,#fff)}
+header{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:15px 4%;background:#fff;border-bottom:1px solid var(--line)}
+.brand{font-size:27px;font-weight:850;color:var(--blue)}
+nav{display:flex;gap:18px;flex-wrap:wrap}
+nav a{text-decoration:none;color:var(--navy);font-weight:650;font-size:14px}
+.hero{padding:27px 4%;background:linear-gradient(100deg,#eff9ff,#d6ecff)}
+.eyebrow{font-size:12px;font-weight:800;color:var(--blue);letter-spacing:.08em;text-transform:uppercase}
+h1{font-size:clamp(28px,4vw,43px);margin:8px 0}
+h1 span{color:var(--blue)}
+.hero p{color:var(--muted);line-height:1.7;margin-bottom:0}
+.wrap{max-width:1500px;margin:auto;padding:20px 3%}
+.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,.8fr);gap:16px;align-items:start}
+.panel{background:#ffffffed;border:1px solid var(--line);border-radius:14px;padding:17px;box-shadow:0 8px 24px #3679a012;margin-bottom:16px}
+.panel h2{margin:0 0 8px;font-size:21px}
+.panel h3{margin:18px 0 9px}
+.sub{color:var(--muted);font-size:13px;line-height:1.65}
+.pill{display:inline-block;background:var(--pale);border:1px solid var(--line);color:var(--blue);padding:7px 12px;border-radius:22px;font-weight:750;font-size:13px}
+svg{width:100%;height:auto;display:block}
+svg text{font-family:"Segoe UI",Arial,sans-serif}
+.angle-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.angle{padding:10px 4px;border:1px solid var(--line);border-radius:9px;background:#f8fcff;text-align:center}
+.angle strong{display:block;color:var(--blue);font-size:18px;margin:5px 0}
+.angle small{font-size:11px;color:var(--muted)}
+.control{margin:20px 0}
+.control-head{display:flex;justify-content:space-between;gap:10px;font-size:13px;font-weight:700;margin-bottom:9px}
+.control output{font-size:16px;color:var(--blue)}
+input[type=range]{width:100%;accent-color:var(--blue)}
+.range-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:11px}
+select{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:white;color:var(--navy)}
+.spectrum{height:18px;border-radius:20px;margin:12px 0;background:linear-gradient(90deg,#f33,#ff982e,#f4d72f,#38b96d,#168cff,#4d55ed,#9946dc)}
+.colors{display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;color:var(--muted);font-size:11px}
+.note,.formula{background:var(--pale);border:1px solid var(--line);padding:12px;border-radius:9px;color:var(--muted);font-size:13px;line-height:1.65}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.step{padding:13px;border:1px solid var(--line);border-radius:10px;background:#fbfdff;margin:9px 0;line-height:1.65}
+.step b{color:var(--blue)}
+.math{font-family:Cambria,Georgia,serif;font-size:18px;color:#103c7b;background:#f2f8ff;padding:10px;border-radius:7px;margin:8px 0;overflow-wrap:anywhere}
+.concept{border:1px solid var(--line);border-radius:10px;padding:13px;margin:10px 0;background:#fbfdff}
+.concept h3{margin:0 0 6px;color:#1459a5}
+.concept p{margin:0;color:var(--muted);line-height:1.7;font-size:14px}
+.question{border:1px solid var(--line);border-radius:10px;padding:14px;margin:12px 0}
+.question p{font-weight:700;line-height:1.5}
+.option{display:block;width:100%;text-align:left;margin:7px 0;font-weight:500}
+.option.correct{background:#e9f9ef;border-color:#64bd87}
+.option.wrong{background:#fff0f1;border-color:#e5a0a8}
+#quizResult{font-weight:750;line-height:1.6;min-height:25px}
+.tabs button,button{border:1px solid var(--line);background:#f6fbff;color:var(--navy);border-radius:8px;padding:10px 13px;cursor:pointer;font-weight:650}
+button:hover{border-color:var(--blue);background:#e9f5ff}
+.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+footer{text-align:center;padding:22px;background:#f2f9ff;color:var(--muted);font-size:12px}
+@media(max-width:900px){.layout,.grid2{grid-template-columns:1fr}}
+@media(max-width:500px){.wrap{padding:12px}.panel{padding:12px}.angle-grid{grid-template-columns:repeat(2,minmax(0,1fr))}nav{gap:11px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">✳ RayLab</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="refraction.html">Refraction</a>
+    <a href="lenses.html">Lenses</a>
+    <a href="prism.html">Prism Lab</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">Class 10 Physics · Ray Optics</div>
+  <h1>Refraction Through a <span>Glass Prism</span></h1>
+  <p>Explore the path of light through a triangular prism. Change the settings, inspect the angles, work through the calculations, and test your understanding.</p>
+</section>
+
+<main class="wrap">
+<div class="layout">
+<section class="panel">
+  <div class="pill">● Live Ray Simulation</div>
+  <svg id="diagram" viewBox="0 0 760 440" role="img" aria-label="Interactive prism ray diagram">
+    <defs>
+      <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#80caff" stop-opacity=".55"/>
+        <stop offset="100%" stop-color="#c7eaff" stop-opacity=".85"/>
+      </linearGradient>
+      <marker id="arrow" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+        <path d="M0 0 L6 3 L0 6" fill="#0878f9"/>
+      </marker>
+    </defs>
+    <g id="drawing"></g>
+  </svg>
+
+  <h3>Live angle values</h3>
+  <div class="angle-grid">
+    <div class="angle"><i>i</i><strong id="vi">—</strong><small>Incidence</small></div>
+    <div class="angle"><i>r₁</i><strong id="vr1">—</strong><small>Refraction at first face</small></div>
+    <div class="angle"><i>r₂</i><strong id="vr2">—</strong><small>Incidence at second face</small></div>
+    <div class="angle"><i>e</i><strong id="ve">—</strong><small>Emergence</small></div>
+    <div class="angle"><i>A</i><strong id="va">—</strong><small>Prism angle</small></div>
+    <div class="angle"><i>δ</i><strong id="vd">—</strong><small>Deviation</small></div>
+  </div>
+  <p class="sub">Angle arcs are measured from the normals at the refracting faces. The prism angle A is between the two faces.</p>
+</section>
+
+<aside class="panel">
+  <h2>⚗ Experiment controls</h2>
+  <p class="sub">Adjust a value and watch the diagram and calculations update.</p>
+
+  <div class="control">
+    <div class="control-head"><label for="incidence">Angle of incidence (i)</label><output id="iout">30°</output></div>
+    <input id="incidence" type="range" min="10" max="60" value="30">
+    <div class="range-labels"><span>10°</span><span>60°</span></div>
+  </div>
+
+  <div class="control">
+    <div class="control-head"><label for="apex">Prism angle (A)</label><output id="aout">60°</output></div>
+    <input id="apex" type="range" min="40" max="70" value="60">
+    <div class="range-labels"><span>40°</span><span>70°</span></div>
+  </div>
+
+  <div class="control">
+    <div class="control-head"><label for="index">Refractive index (n)</label><output id="nout">1.50</output></div>
+    <input id="index" type="range" min="1.30" max="1.70" step=".01" value="1.50">
+    <div class="range-labels"><span>1.30</span><span>1.70</span></div>
+  </div>
+
+  <div class="control">
+    <label for="source"><b>Light source</b></label>
+    <select id="source">
+      <option value="white">White light — all colours</option>
+      <option value="red">Red light</option>
+      <option value="green">Green light</option>
+      <option value="violet">Violet light</option>
+    </select>
+  </div>
+
+  <b>Spectrum</b>
+  <div class="spectrum"></div>
+  <div class="colors"><span>Red</span><span>Orange</span><span>Yellow</span><span>Green</span><span>Blue</span><span>Indigo</span><span>Violet</span></div>
+  <p class="note">Try changing one control at a time. Violet light generally deviates more than red light in glass.</p>
+</aside>
+</div>
+
+<section class="panel">
+  <h2>🧮 Calculation Lab</h2>
+  <p class="sub">The values below use the current settings. Follow each step to see where the equations come from.</p>
+  <div class="grid2">
+    <div>
+      <h3>Step 1 · Refraction at the first face</h3>
+      <div class="step">Snell's law:
+        <div class="math">n₁ sin i = n₂ sin r₁</div>
+        For air entering glass, n₁ ≈ 1 and n₂ = n.
+        <div class="math" id="calc1">sin r₁ = sin i / n</div>
+        <div class="math" id="calc1ans">r₁ = —</div>
+      </div>
+    </div>
+    <div>
+      <h3>Step 2 · Inside the prism</h3>
+      <div class="step">The two internal angles add up to the prism angle:
+        <div class="math">r₁ + r₂ = A</div>
+        <div class="math" id="calc2">r₂ = A − r₁</div>
+        <div class="math" id="calc2ans">r₂ = —</div>
+      </div>
+    </div>
+    <div>
+      <h3>Step 3 · Refraction out into air</h3>
+      <div class="step">At the second face, glass to air:
+        <div class="math">n sin r₂ = sin e</div>
+        <div class="math" id="calc3">sin e = n sin r₂</div>
+        <div class="math" id="calc3ans">e = —</div>
+        <p class="sub" id="tirNote"></p>
+      </div>
+    </div>
+    <div>
+      <h3>Step 4 · Angle of deviation</h3>
+      <div class="step">Deviation is the angle between the original direction and the emergent direction:
+        <div class="math">δ = i + e − A</div>
+        <div class="math" id="calc4">δ = i + e − A</div>
+        <div class="math" id="calc4ans">δ = —</div>
+      </div>
+    </div>
+  </div>
+  <div class="note"><b>Important:</b> These calculations use a single representative refractive index. The rainbow display illustrates dispersion qualitatively; accurate colour-by-colour values require a refractive index for each wavelength.</div>
+</section>
+
+<section class="panel">
+  <h2>📘 Learn the concepts</h2>
+  <p class="sub">Read these explanations alongside the ray diagram.</p>
+  <div class="grid2">
+    <div class="concept"><h3>1. What is a prism?</h3><p>A prism is a transparent refracting medium bounded by two inclined plane surfaces. In a triangular glass prism, the two sloping faces refract the light.</p></div>
+    <div class="concept"><h3>2. Why does light bend?</h3><p>Light changes speed when it travels between air and glass. At the first face it bends towards the normal; when it leaves glass for air, it bends away from the normal.</p></div>
+    <div class="concept"><h3>3. Angle of deviation</h3><p>The emergent ray generally travels in a different direction from the incident ray. The angle between the original direction and the emergent direction is called the angle of deviation, δ.</p></div>
+    <div class="concept"><h3>4. Dispersion of white light</h3><p>White light contains many colours. The refractive index of glass depends on wavelength, so colours refract by different amounts and spread into a spectrum. Violet usually deviates most and red least.</p></div>
+    <div class="concept"><h3>5. The important angles</h3><p><b>i</b>: incidence at the first face; <b>r₁</b>: refraction inside at the first face; <b>r₂</b>: incidence inside at the second face; <b>e</b>: emergence into air; <b>A</b>: angle between prism faces; <b>δ</b>: deviation.</p></div>
+    <div class="concept"><h3>6. What to investigate</h3><p>Increase the incidence angle and watch the internal ray. Change the refractive index to compare bending. Then switch between red, green and violet to discuss dispersion.</p></div>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>🎯 Interactive quiz</h2>
+  <p class="sub">Choose one answer for each question, then check your score.</p>
+  <div id="quiz"></div>
+  <button class="primary" id="checkQuiz">Check my answers</button>
+  <button id="resetQuiz">Try again</button>
+  <p id="quizResult" aria-live="polite"></p>
+</section>
+</main>
+
+<footer>RayLab · Explore physics by experimenting · NCERT-aligned learning</footer>
+
+<script>
+(() => {
+const NS = "http://www.w3.org/2000/svg";
+const g = document.getElementById("drawing");
+const $ = id => document.getElementById(id);
+const rad = d => d * Math.PI / 180;
+const deg = r => r * 180 / Math.PI;
+const V = (x,y) => ({x,y});
+const add = (a,b) => V(a.x+b.x,a.y+b.y);
+const sub = (a,b) => V(a.x-b.x,a.y-b.y);
+const mul = (a,s) => V(a.x*s,a.y*s);
+const dot = (a,b) => a.x*b.x+a.y*b.y;
+const cross = (a,b) => a.x*b.y-a.y*b.x;
+const len = a => Math.hypot(a.x,a.y);
+const unit = a => mul(a,1/(len(a)||1));
+const ang = a => Math.atan2(a.y,a.x);
+
+function el(tag,attrs={},txt="") {
+  const e=document.createElementNS(NS,tag);
+  Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
+  if(txt!=="")e.textContent=txt;
+  g.appendChild(e);
+  return e;
+}
+function line(a,b,attrs={}) {
+  return el("line",{x1:a.x,y1:a.y,x2:b.x,y2:b.y,...attrs});
+}
+function path(d,attrs={}) { return el("path",{d,...attrs}); }
+function txt(p,s,attrs={}) {
+  return el("text",{x:p.x,y:p.y,"text-anchor":"middle",
+    "font-size":15,"font-weight":700,fill:"#102d63",...attrs},s);
+}
+function ext(p,d,n) { return add(p,mul(unit(d),n)); }
+
+function intersect(O,D,A,B) {
+  const E=sub(B,A), den=cross(D,E);
+  if(Math.abs(den)<1e-8)return null;
+  const t=cross(sub(A,O),E)/den;
+  const u=cross(sub(A,O),D)/den;
+  return t>.001&&u>=0&&u<=1 ? {p:add(O,mul(D,t)),t} : null;
+}
+
+function refract(I,N,n1,n2) {
+  let n=unit(N);
+  if(dot(I,n)>0)n=mul(n,-1);
+  const c=-dot(I,n), eta=n1/n2;
+  const k=1-eta*eta*(1-c*c);
+  if(k<0)return null;
+  return unit(add(mul(I,eta),mul(n,eta*c-Math.sqrt(k))));
+}
+function ab(a,b) {
+  return deg(Math.acos(Math.max(-1,Math.min(1,dot(unit(a),unit(b))))));
+}
+function arc(c,v1,v2,r,label,color="#0878f9") {
+  const a1=ang(v1);
+  let d=ang(v2)-a1;
+  while(d>Math.PI)d-=2*Math.PI;
+  while(d< -Math.PI)d+=2*Math.PI;
+  const p1=V(c.x+r*Math.cos(a1),c.y+r*Math.sin(a1));
+  const p2=V(c.x+r*Math.cos(a1+d),c.y+r*Math.sin(a1+d));
+  path(`M ${p1.x} ${p1.y} A ${r} ${r} 0 0 ${d>=0?1:0} ${p2.x} ${p2.y}`,
+    {fill:"none",stroke:color,"stroke-width":2.3});
+  const m=a1+d/2;
+  txt(V(c.x+(r+13)*Math.cos(m),c.y+(r+13)*Math.sin(m)),label,
+    {fill:color,"font-size":17,"font-style":"italic",
+     stroke:"white","stroke-width":3,"paint-order":"stroke"});
+}
+
+function update() {
+  g.innerHTML="";
+  const i=+$("incidence").value;
+  const Adeg=+$("apex").value;
+  const n=+$("index").value;
+  const source=$("source").value;
+
+  $("iout").textContent=i+"°";
+  $("aout").textContent=Adeg+"°";
+  $("nout").textContent=n.toFixed(2);
+
+  const apex=V(380,45), half=245;
+  const h=half/Math.tan(rad(Adeg/2));
+  const scale=Math.min(1,285/h);
+  const B=V(380-half*scale,45+h*scale);
+  const C=V(380+half*scale,45+h*scale);
+  const center=V((apex.x+B.x+C.x)/3,(apex.y+B.y+C.y)/3);
+
+  path(`M ${apex.x} ${apex.y} L ${B.x} ${B.y} L ${C.x} ${C.y} Z`,
+    {fill:"url(#glass)",stroke:"#0878f9","stroke-width":2.5});
+
+  const f1=unit(sub(B,apex)), f2=unit(sub(C,apex));
+  let N1=unit(V(f1.y,-f1.x));
+  let N2=unit(V(-f2.y,f2.x));
+  if(dot(N1,sub(center,apex))>0)N1=mul(N1,-1);
+  if(dot(N2,sub(center,apex))>0)N2=mul(N2,-1);
+
+  const Q=add(apex,mul(sub(B,apex),.59));
+  const inward=mul(N1,-1), tangent=f1;
+  let I=unit(add(mul(inward,Math.cos(rad(i))),
+                 mul(tangent,-Math.sin(rad(i)))));
+  if(I.x<0)I=unit(add(mul(inward,Math.cos(rad(i))),
+                      mul(tangent,Math.sin(rad(i)))));
+
+  const start=ext(Q,mul(I,-1),220);
+  line(start,Q,{stroke:"#0878f9","stroke-width":3,"marker-end":"url(#arrow)"});
+  txt(ext(start,I,-14),"P");
+  txt(V(Q.x-13,Q.y+22),"Q");
+  line(Q,ext(Q,N1,90),{stroke:"#183e77","stroke-width":1.5,"stroke-dasharray":"5 6"});
+  txt(ext(Q,N1,103),"N₁",{"font-style":"italic"});
+
+  const colours=[
+    {name:"red",hex:"#f23e4b",n:n-.018},
+    {name:"orange",hex:"#ff8e2b",n:n-.012},
+    {name:"yellow",hex:"#f4c82e",n:n-.007},
+    {name:"green",hex:"#32bb72",n},
+    {name:"blue",hex:"#168cff",n:n+.008},
+    {name:"indigo",hex:"#4b54ed",n:n+.013},
+    {name:"violet",hex:"#9446db",n:n+.018}
+  ];
+  const selected=source==="white" ? colours : colours.filter(c=>c.name===source);
+  const rays=[];
+
+  for(const colour of selected) {
+    const inside=refract(I,N1,1,colour.n);
+    if(!inside)continue;
+    const hit=intersect(Q,inside,apex,C);
+    if(!hit)continue;
+    const outgoing=refract(inside,N2,colour.n,1);
+    if(!outgoing)continue;
+    rays.push({colour,inside,R:hit.p,outgoing});
+  }
+
+  const central=rays.find(r=>r.colour.name==="green")||
+                rays[Math.floor(rays.length/2)];
+
+  for(const ray of rays) {
+    line(Q,ray.R,{stroke:ray.colour.hex,"stroke-width":source==="white"?2.1:3});
+    line(ray.R,ext(ray.R,ray.outgoing,175),{
+      stroke:ray.colour.hex,"stroke-width":source==="white"?2.1:3,
+      "marker-end":"url(#arrow)"
+    });
+  }
+
+  if(central) {
+    const {inside,R,outgoing}=central;
+    line(R,ext(R,N2,88),{stroke:"#183e77","stroke-width":1.5,"stroke-dasharray":"5 6"});
+    txt(ext(R,N2,101),"N₂",{"font-style":"italic"});
+    txt(V(R.x+13,R.y+22),"R");
+    txt(ext(R,outgoing,190),"S");
+
+    arc(Q,mul(N1,-1),I,31,"i");
+    arc(Q,mul(N1,-1),inside,49,"r₁");
+    arc(R,mul(N2,-1),inside,31,"r₂");
+    arc(R,mul(N2,-1),outgoing,49,"e");
+    arc(apex,sub(B,apex),sub(C,apex),34,"A");
+    line(R,ext(R,I,130),{stroke:"#168cff","stroke-width":1.4,"stroke-dasharray":"5 6"});
+    arc(R,I,outgoing,65,"δ","#ed3b8b");
+
+    const r1=ab(inside,mul(N1,-1));
+    const r2=ab(inside,mul(N2,-1));
+    const e=ab(outgoing,N2);
+    const delta=i+e-Adeg;
+
+    $("vi").textContent=i.toFixed(1)+"°";
+    $("vr1").textContent=r1.toFixed(1)+"°";
+    $("vr2").textContent=r2.toFixed(1)+"°";
+    $("ve").textContent=e.toFixed(1)+"°";
+    $("va").textContent=Adeg.toFixed(1)+"°";
+    $("vd").textContent=delta.toFixed(1)+"°";
+
+    $("calc1").textContent=`sin r₁ = sin(${i}°) / ${n.toFixed(2)}`;
+    $("calc1ans").textContent=`r₁ ≈ ${r1.toFixed(1)}° (diagram estimate)`;
+    $("calc2").textContent=`r₂ = ${Adeg}° − ${r1.toFixed(1)}°`;
+    $("calc2ans").textContent=`r₂ ≈ ${r2.toFixed(1)}°`;
+    $("calc3").textContent=`sin e = ${n.toFixed(2)} × sin(${r2.toFixed(1)}°)`;
+    $("calc3ans").textContent=`e ≈ ${e.toFixed(1)}° (diagram estimate)`;
+    $("calc4").textContent=`δ = ${i}° + ${e.toFixed(1)}° − ${Adeg}°`;
+    $("calc4ans").textContent=`δ ≈ ${delta.toFixed(1)}°`;
+    $("tirNote").textContent="If n sin r₂ exceeds 1, total internal reflection occurs and there is no emergent ray.";
+  } else {
+    ["vi","vr1","vr2","ve","va","vd"].forEach(id=>$(id).textContent="—");
+    $("tirNote").textContent="No transmitted ray found for these settings. Try a smaller incidence angle.";
+    ["calc1ans","calc2ans","calc3ans","calc4ans"].forEach(id=>{
+      $(id).textContent="No emergent ray for this setting.";
+    });
+  }
+
+  txt(V(apex.x,apex.y-12),"A",{"font-size":18});
+  txt(V(B.x-12,B.y+20),"B",{"font-size":18});
+  txt(V(C.x+12,C.y+20),"C",{"font-size":18});
+  el("circle",{cx:Q.x,cy:Q.y,r:4,fill:"#0878f9"});
+  if(central)el("circle",{cx:central.R.x,cy:central.R.y,r:4,fill:"#0878f9"});
+}
+
+["incidence","apex","index","source"].forEach(id=>{
+  $(id).addEventListener("input",update);
+});
+
+/* Quiz */
+const questions=[
+  {q:"Which angle is measured between the incident ray and the normal?",
+   opts:["Angle of emergence","Angle of incidence","Prism angle"],a:1,
+   why:"The angle of incidence i is measured between the incident ray and the normal at the first face."},
+  {q:"What is the relation between the internal angles and prism angle?",
+   opts:["r₁ + r₂ = A","i + e = A","r₁ − r₂ = A"],a:0,
+   why:"For a prism, the two internal refraction angles add up to the prism angle: r₁ + r₂ = A."},
+  {q:"Which colour usually deviates the most in glass?",
+   opts:["Red","Yellow","Violet"],a:2,
+   why:"Glass generally has a larger refractive index for violet light than for red light, so violet deviates more."},
+  {q:"Which formula gives the angle of deviation?",
+   opts:["δ = i + e − A","δ = i − e + A","δ = r₁ + e"],a:0,
+   why:"The prism deviation relation is δ = i + e − A."},
+  {q:"What happens as light enters glass from air?",
+   opts:["It always bends away from the normal","It bends towards the normal","It stops moving"],a:1,
+   why:"When light enters a medium with a higher refractive index, it bends towards the normal."}
+];
+
+let answers={};
+
+function buildQuiz() {
+  const root=$("quiz");
+  root.innerHTML="";
+  questions.forEach((q,qi)=>{
+    const box=document.createElement("div");
+    box.className="question";
+    const p=document.createElement("p");
+    p.textContent=(qi+1)+". "+q.q;
+    box.appendChild(p);
+
+    q.opts.forEach((option,oi)=>{
+      const b=document.createElement("button");
+      b.className="option";
+      b.textContent=String.fromCharCode(65+oi)+". "+option;
+      b.addEventListener("click",()=>{
+        answers[qi]=oi;
+        box.querySelectorAll("button").forEach((x,j)=>{
+          x.style.borderColor=j===oi?"var(--blue)":"var(--line)";
+        });
+      });
+      box.appendChild(b);
+    });
+
+    const why=document.createElement("div");
+    why.className="sub";
+    why.id="why"+qi;
+    why.style.marginTop="8px";
+    box.appendChild(why);
+    root.appendChild(box);
+  });
+}
+
+buildQuiz();
+
+$("checkQuiz").addEventListener("click",()=>{
+  let score=0;
+  questions.forEach((q,qi)=>{
+    const box=$("quiz").children[qi];
+    box.querySelectorAll("button").forEach((b,oi)=>{
+      b.classList.remove("correct","wrong");
+      if(oi===q.a)b.classList.add("correct");
+      if(answers[qi]===oi&&oi!==q.a)b.classList.add("wrong");
+    });
+    $("why"+qi).textContent=(answers[qi]===q.a?"Correct. ":"Review: ")+q.why;
+    if(answers[qi]===q.a)score++;
+  });
+
+  $("quizResult").textContent=`Your score: ${score} / ${questions.length}. `+
+    (score===questions.length?"Excellent work! 🎉":"Review the explanations above and try again.");
+  $("quizResult").style.color=score===questions.length?"var(--green)":"var(--navy)";
+});
+
+$("resetQuiz").addEventListener("click",()=>{
+  answers={};
+  $("quizResult").textContent="";
+  buildQuiz();
+});
+
+update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RayLab | Optical Instruments Lab</title>
+
+<style>
+:root {
+  --blue:#0878f9;
+  --navy:#102d63;
+  --muted:#55749f;
+  --line:#cce7ff;
+  --pale:#eff8ff;
+  --green:#16834b;
+  --pink:#e64b87;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:"Segoe UI",Arial,sans-serif;
+  color:var(--navy);
+  background:linear-gradient(135deg,#f5fbff,#eaf5ff,#fff);
+}
+header {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:14px; flex-wrap:wrap; padding:15px 4%;
+  background:#fff; border-bottom:1px solid var(--line);
+}
+.brand { font-size:27px; font-weight:850; color:var(--blue); }
+nav { display:flex; gap:17px; flex-wrap:wrap; }
+nav a {
+  text-decoration:none; color:var(--navy);
+  font-weight:650; font-size:14px;
+}
+.hero { padding:27px 4%; background:linear-gradient(100deg,#eff9ff,#d6ecff); }
+.eyebrow {
+  font-size:12px; font-weight:800; color:var(--blue);
+  letter-spacing:.08em; text-transform:uppercase;
+}
+h1 { font-size:clamp(28px,4vw,43px); margin:8px 0; }
+h1 span { color:var(--blue); }
+.hero p { color:var(--muted); line-height:1.7; margin-bottom:0; }
+.wrap { max-width:1500px; margin:auto; padding:20px 3%; }
+.layout {
+  display:grid; grid-template-columns:minmax(0,1.65fr) minmax(280px,.8fr);
+  gap:16px; align-items:start;
+}
+.panel {
+  background:#ffffffed; border:1px solid var(--line); border-radius:14px;
+  padding:17px; box-shadow:0 8px 24px #3679a012; margin-bottom:16px;
+}
+.panel h2 { margin:0 0 8px; font-size:21px; }
+.sub { color:var(--muted); font-size:13px; line-height:1.65; }
+.pill {
+  display:inline-block; background:var(--pale); border:1px solid var(--line);
+  color:var(--blue); padding:7px 12px; border-radius:22px;
+  font-weight:750; font-size:13px;
+}
+svg { width:100%; height:auto; display:block; }
+svg text { font-family:"Segoe UI",Arial,sans-serif; }
+.control { margin:20px 0; }
+.control-head {
+  display:flex; justify-content:space-between; gap:10px;
+  font-size:13px; font-weight:700; margin-bottom:9px;
+}
+.control output { font-size:16px; color:var(--blue); }
+input[type=range] { width:100%; accent-color:var(--blue); }
+.range-labels {
+  display:flex; justify-content:space-between;
+  color:var(--muted); font-size:11px;
+}
+select {
+  width:100%; padding:10px; border:1px solid var(--line);
+  border-radius:8px; background:white; color:var(--navy);
+}
+button {
+  border:1px solid var(--line); background:#f6fbff; color:var(--navy);
+  border-radius:8px; padding:10px 13px; cursor:pointer;
+  font-weight:650; margin:4px 3px 4px 0;
+}
+button:hover { border-color:var(--blue); background:#e9f5ff; }
+.primary { background:var(--blue); color:white; border-color:var(--blue); }
+.stats {
+  display:grid; grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px; margin-top:12px;
+}
+.stat {
+  text-align:center; padding:10px 4px; border:1px solid var(--line);
+  border-radius:9px; background:#f8fcff;
+}
+.stat strong { display:block; color:var(--blue); font-size:18px; margin:5px 0; }
+.stat small { color:var(--muted); font-size:11px; }
+.note,.formula {
+  background:var(--pale); border:1px solid var(--line);
+  padding:12px; border-radius:9px; color:var(--muted);
+  font-size:13px; line-height:1.65;
+}
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.step,.concept,.question {
+  padding:13px; border:1px solid var(--line); border-radius:10px;
+  background:#fbfdff; margin:10px 0; line-height:1.65;
+}
+.math {
+  font-family:Cambria,Georgia,serif; font-size:18px; color:#103c7b;
+  background:#f2f8ff; padding:10px; border-radius:7px;
+  margin:8px 0; overflow-wrap:anywhere;
+}
+.concept h3 { margin:0 0 6px; color:#1459a5; }
+.concept p { margin:0; color:var(--muted); line-height:1.7; font-size:14px; }
+.question p { font-weight:700; line-height:1.5; }
+.option { display:block; width:100%; text-align:left; margin:7px 0; font-weight:500; }
+.option.correct { background:#e9f9ef; border-color:#64bd87; }
+.option.wrong { background:#fff0f1; border-color:#e5a0a8; }
+#quizResult { font-weight:750; line-height:1.6; min-height:25px; }
+.tabs { display:flex; gap:7px; flex-wrap:wrap; margin:12px 0; }
+.tabs button.active { background:var(--blue); color:white; border-color:var(--blue); }
+.hide { display:none!important; }
+footer {
+  text-align:center; padding:22px; background:#f2f9ff;
+  color:var(--muted); font-size:12px;
+}
+@media(max-width:900px) {
+  .layout,.grid2 { grid-template-columns:1fr; }
+}
+@media(max-width:500px) {
+  .wrap { padding:12px; }
+  .panel { padding:12px; }
+  .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  nav { gap:11px; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="brand">✳ RayLab</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="refraction.html">Refraction</a>
+    <a href="lenses.html">Lenses</a>
+    <a href="prism.html">Prism</a>
+    <a href="optical-instruments.html">Optical Instruments</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">Class 12 Physics · Ray Optics</div>
+  <h1>Optical Instruments <span>Lab</span></h1>
+  <p>Build a microscope and telescope virtually. Move lenses, adjust focal lengths,
+  change object positions, and discover how optical instruments help us see the tiny and the distant.</p>
+</section>
+
+<main class="wrap">
+<div class="layout">
+
+<section class="panel">
+  <div class="pill">● Interactive optical bench</div>
+  <div class="tabs">
+    <button class="active" data-mode="microscope">Compound Microscope</button>
+    <button data-mode="telescope">Astronomical Telescope</button>
+    <button data-mode="simple">Simple Microscope</button>
+  </div>
+
+  <svg id="bench" viewBox="0 0 820 390" role="img"
+       aria-label="Interactive ray diagram for an optical instrument">
+    <defs>
+      <marker id="blueArrow" markerWidth="7" markerHeight="7"
+              refX="5" refY="3" orient="auto">
+        <path d="M0 0 L6 3 L0 6" fill="#0878f9"/>
+      </marker>
+      <marker id="pinkArrow" markerWidth="7" markerHeight="7"
+              refX="5" refY="3" orient="auto">
+        <path d="M0 0 L6 3 L0 6" fill="#e64b87"/>
+      </marker>
+    </defs>
+    <g id="rays"></g>
+  </svg>
+
+  <div class="stats">
+    <div class="stat"><small>Objective focal length</small><strong id="sf1">1.0 cm</strong></div>
+    <div class="stat"><small>Eyepiece focal length</small><strong id="sf2">5.0 cm</strong></div>
+    <div class="stat"><small>Magnification estimate</small><strong id="smag">—</strong></div>
+    <div class="stat"><small>Tube length / separation</small><strong id="stube">—</strong></div>
+    <div class="stat"><small>Image nature</small><strong id="snature">—</strong></div>
+    <div class="stat"><small>Viewing condition</small><strong id="sview">—</strong></div>
+  </div>
+  <p class="sub" id="diagramHint">Move the controls to experiment. The diagram is schematic and not to scale.</p>
+</section>
+
+<aside class="panel">
+  <h2>🧪 Experiment controls</h2>
+  <p class="sub">Change a variable and observe the instrument.</p>
+
+  <div class="control">
+    <div class="control-head"><label for="f1">Objective focal length (fₒ)</label><output id="f1out">1.0 cm</output></div>
+    <input id="f1" type="range" min="0.5" max="3" step="0.1" value="1">
+    <div class="range-labels"><span>0.5 cm</span><span>3 cm</span></div>
+  </div>
+
+  <div class="control">
+    <div class="control-head"><label for="f2">Eyepiece focal length (fₑ)</label><output id="f2out">5.0 cm</output></div>
+    <input id="f2" type="range" min="2" max="10" step="0.5" value="5">
+    <div class="range-labels"><span>2 cm</span><span>10 cm</span></div>
+  </div>
+
+  <div class="control" id="objectControl">
+    <div class="control-head"><label for="obj">Object distance from objective</label><output id="objout">1.2 cm</output></div>
+    <input id="obj" type="range" min="1.1" max="8" step="0.1" value="1.2">
+    <div class="range-labels"><span>Near focus</span><span>Farther away</span></div>
+  </div>
+
+  <div class="control" id="tubeControl">
+    <div class="control-head"><label for="tube">Tube length / lens separation</label><output id="tubeout">16 cm</output></div>
+    <input id="tube" type="range" min="8" max="24" step="1" value="16">
+    <div class="range-labels"><span>8 cm</span><span>24 cm</span></div>
+  </div>
+
+  <div class="control" id="nearControl">
+    <label for="near"><b>Final image setting</b></label>
+    <select id="near">
+      <option value="infinity">Final image at infinity (relaxed eye)</option>
+      <option value="near">Final image at near point (25 cm)</option>
+    </select>
+  </div>
+
+  <div class="note">
+    <b>Lab challenge:</b> try to make the compound microscope produce a larger image.
+    Then switch to telescope mode and compare what happens when the objective focal length increases.
+  </div>
+</aside>
+</div>
+
+<section class="panel">
+  <h2>🧮 Calculation Lab</h2>
+  <p class="sub">Use the controls to see the estimated values change.</p>
+  <div class="grid2">
+    <div class="step">
+      <b>1 · Lens formula</b>
+      <div class="math">1/f = 1/v − 1/u</div>
+      <p class="sub">Using the Cartesian sign convention, a real object on the left has negative u. A convex lens has positive f.</p>
+      <div class="math" id="lensCalc">Image distance: —</div>
+    </div>
+    <div class="step">
+      <b>2 · Objective magnification</b>
+      <div class="math">mₒ = vₒ/uₒ</div>
+      <p class="sub">The objective forms the first image. In a compound microscope this intermediate image is usually real, inverted, and enlarged.</p>
+      <div class="math" id="objCalc">Objective magnification: —</div>
+    </div>
+    <div class="step" id="eyeCalcBox">
+      <b>3 · Eyepiece angular magnification</b>
+      <div class="math">Mₑ ≈ D/fₑ</div>
+      <p class="sub">For a simple microscope with final image at the near point, M = 1 + D/f. For relaxed viewing, M = D/f.</p>
+      <div class="math" id="eyeCalc">Eyepiece estimate: —</div>
+    </div>
+    <div class="step">
+      <b>4 · Total magnifying power</b>
+      <div class="math">M ≈ mₒ × Mₑ</div>
+      <p class="sub">The compound microscope combines the objective's linear magnification with the eyepiece's angular magnification.</p>
+      <div class="math" id="totalCalc">Total magnification: —</div>
+    </div>
+  </div>
+  <div class="note"><b>Model note:</b> the optical bench is a learning schematic, not a precision optical-design tool. Compound microscope calculations use common NCERT approximations; actual instruments depend on exact lens positions and focusing.</div>
+</section>
+
+<section class="panel">
+  <h2>📘 NCERT concept cards</h2>
+  <div class="grid2">
+    <div class="concept">
+      <h3>1. Simple microscope</h3>
+      <p>A simple microscope is a convex lens of short focal length. The object is placed within its focal length, producing a virtual, erect, magnified image. Its magnifying power is approximately D/f for relaxed viewing and 1 + D/f when the final image is at the near point.</p>
+    </div>
+    <div class="concept">
+      <h3>2. Compound microscope</h3>
+      <p>A compound microscope uses two convex lenses. The objective has a very short focal length and creates a real, inverted, enlarged intermediate image. The eyepiece acts as a magnifier to produce the final virtual image.</p>
+    </div>
+    <div class="concept">
+      <h3>3. Astronomical telescope</h3>
+      <p>The objective has a large focal length and collects light from distant objects. The eyepiece has a shorter focal length and magnifies the intermediate image. In normal adjustment, lens separation is approximately fₒ + fₑ.</p>
+    </div>
+    <div class="concept">
+      <h3>4. Magnifying power</h3>
+      <p>Magnifying power is the ratio of the angle subtended by the final image at the eye to the angle subtended by the object when viewed directly. It is an angular magnification, not simply the physical size of the image.</p>
+    </div>
+    <div class="concept">
+      <h3>5. Near point and relaxed eye</h3>
+      <p>The conventional near point for a normal eye is D = 25 cm. Viewing at the near point can increase magnifying power, while a final image at infinity allows relaxed viewing.</p>
+    </div>
+    <div class="concept">
+      <h3>6. Compare the instruments</h3>
+      <p>A simple microscope uses one convex lens. A compound microscope uses an objective and an eyepiece to view tiny nearby objects. An astronomical telescope uses an objective and an eyepiece to view distant objects.</p>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>🎯 Test your understanding</h2>
+  <p class="sub">Answer the questions, then check your score and explanations.</p>
+  <div id="quiz"></div>
+  <button class="primary" id="checkQuiz">Check my answers</button>
+  <button id="resetQuiz">Try again</button>
+  <p id="quizResult" aria-live="polite"></p>
+</section>
+</main>
+
+<footer>RayLab · Optical Instruments Lab · Explore, adjust, observe, understand</footer>
+
+<!-- PASTE PART 2 HERE, BEFORE THE CLOSING BODY TAG -->
+ <script>
+(()=>{
+const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
+let mode='microscope',answers={};
+
+const qs=[
+{q:'Which two lenses are used in a compound microscope?',o:['Two concave lenses','A short-focal-length objective and an eyepiece','Two plane mirrors'],a:1,x:'A compound microscope uses an objective of very short focal length and an eyepiece.'},
+{q:'What image does the objective of a compound microscope usually form?',o:['Virtual, erect and diminished','Real, inverted and enlarged','Always virtual and erect'],a:1,x:'The objective creates a real, inverted, enlarged intermediate image.'},
+{q:'For an astronomical telescope in normal adjustment, the lens separation is approximately:',o:['fₒ − fₑ','fₒ × fₑ','fₒ + fₑ'],a:2,x:'In normal adjustment, the objective’s image lies at the eyepiece focal plane, so separation ≈ fₒ + fₑ.'},
+{q:'A simple microscope forms a magnified virtual image when the object is:',o:['Within the focal length of the convex lens','At twice the focal length','Beyond twice the focal length'],a:0,x:'With the object inside the focal length, a convex lens produces a virtual, erect, magnified image.'},
+{q:'The conventional near point of a normal human eye is:',o:['2.5 cm','25 cm','2.5 m'],a:1,x:'The conventional least distance of distinct vision is 25 cm.'},
+{q:'The magnifying power of a telescope in normal adjustment is approximately:',o:['fₒ/fₑ','fₑ/fₒ','fₒ + fₑ'],a:0,x:'For an astronomical telescope, angular magnifying power magnitude is approximately the objective focal length divided by the eyepiece focal length.'}
+];
+
+function svg(tag,attrs={},txt=''){
+  let e=document.createElementNS(NS,tag);
+  Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
+  if(txt)e.textContent=txt;
+  $('rays').appendChild(e);
+  return e;
+}
+function line(x1,y1,x2,y2,color='#0878f9',width=2,dash=''){
+  return svg('line',{x1,y1,x2,y2,stroke:color,'stroke-width':width,
+    'stroke-dasharray':dash,'stroke-linecap':'round'});
+}
+function text(x,y,s,color='#102d63',size=13,anchor='middle',weight=700){
+  return svg('text',{x,y,fill:color,'font-size':size,
+    'text-anchor':anchor,'font-weight':weight},s);
+}
+function lens(x,label){
+  svg('path',{d:`M ${x} 100 Q ${x-18} 190 ${x} 280 Q ${x+18} 190 ${x} 100`,
+    fill:'#9bd8ff88',stroke:'#0878f9','stroke-width':2});
+  line(x,90,x,295,'#0878f9',1,'4 5');
+  text(x,75,label,'#0878f9',14);
+}
+function arrow(x,y,height,color,label){
+  line(x,y,x,y-height,color,3);
+  line(x,y-height,x-6,y-height+9,color,3);
+  line(x,y-height,x+6,y-height+9,color,3);
+  text(x,y+18,label,color,12);
+}
+
+function draw(){
+  $('rays').innerHTML='';
+  const f1=+$('f1').value,f2=+$('f2').value;
+  const obj=+$('obj').value,tube=+$('tube').value;
+  const near=$('near').value;
+  const isT=mode==='telescope',isS=mode==='simple';
+
+  $('objectControl').classList.toggle('hide',isT);
+  $('tubeControl').classList.toggle('hide',isS);
+  $('nearControl').classList.toggle('hide',isT);
+  $('eyeCalcBox').classList.toggle('hide',isT);
+  $('sf1').textContent=f1.toFixed(1)+' cm';
+  $('sf2').textContent=f2.toFixed(1)+' cm';
+  $('stube').textContent=isS?'Single lens':tube+' cm';
+
+  line(35,190,785,190,'#9ab8d8',1,'5 5');
+  text(60,35,isT?'DISTANT OBJECT':'OBJECT','#55749f',12);
+  text(750,35,isT?'EYEPIECE':isS?'VIRTUAL IMAGE':'EYEPIECE','#55749f',12);
+
+  if(isS){
+    const x=245,u=-Math.max(f1*.35,.2);
+    const v=1/(1/f1-1/u);
+    lens(x,'Convex lens');
+    arrow(150,190,55,'#e64b87','Object');
+    const imgH=55*Math.abs(v/u);
+    arrow(330,190,Math.min(imgH,100),'#e64b87','Virtual image');
+    line(150,135,245,135,'#e64b87',1,'4 4');
+    line(245,135,330,190-Math.min(imgH,100),'#e64b87',1.5);
+    line(150,135,245,190,'#0878f9',1.5);
+    line(245,190,330,190-Math.min(imgH,100),'#0878f9',1.5);
+
+    const M=near==='near'?1+25/f1:25/f1;
+    $('smag').textContent=M.toFixed(1)+'×';
+    $('snature').textContent='Virtual, erect';
+    $('sview').textContent=near==='near'?'Near point':'Relaxed eye';
+    $('diagramHint').textContent='Simple microscope: keep the object inside the focal length to form a virtual, erect, magnified image.';
+    $('lensCalc').textContent=`Using f = ${f1.toFixed(1)} cm and u = ${u.toFixed(1)} cm: v = ${v.toFixed(2)} cm (virtual, sign convention applied).`;
+    $('objCalc').textContent='Single lens magnification depends on object placement.';
+    $('eyeCalc').textContent=near==='near'?`M = 1 + 25/${f1.toFixed(1)} = ${M.toFixed(2)}`:`M = 25/${f1.toFixed(1)} = ${M.toFixed(2)}`;
+    $('totalCalc').textContent=`Simple microscope magnifying power ≈ ${M.toFixed(2)}×`;
+    return;
+  }
+
+  if(isT){
+    const x1=250,x2=250+Math.min(tube*14,330);
+    lens(x1,'Objective');
+    lens(x2,'Eyepiece');
+    text(110,110,'Distant rays','#55749f',12);
+    line(35,150,x1,150,'#0878f9',2);
+    line(35,190,x1,190,'#0878f9',2);
+    line(35,230,x1,230,'#0878f9',2);
+    line(x1,150,x2,190,'#e64b87',2);
+    line(x1,190,x2,190,'#0878f9',2);
+    line(x1,230,x2,190,'#e64b87',2);
+    line(x2,190,785,150,'#e64b87',2);
+    line(x2,190,785,230,'#e64b87',2);
+    text((x1+x2)/2,255,'Intermediate image near focal plane','#55749f',11);
+
+    const M=f1/f2;
+    $('smag').textContent=M.toFixed(2)+'×';
+    $('snature').textContent='Final image inverted';
+    $('sview').textContent='Normal adjustment';
+    $('diagramHint').textContent='Astronomical telescope: distant parallel rays are collected by the objective; the eyepiece magnifies the intermediate image. Schematic only.';
+    $('lensCalc').textContent=`Normal adjustment: separation ≈ fₒ + fₑ = ${(f1+f2).toFixed(1)} cm.`;
+    $('objCalc').textContent='Distant object: objective forms an image near its focal plane.';
+    $('eyeCalc').textContent='For telescope, angular magnification magnitude ≈ fₒ/fₑ.';
+    $('totalCalc').textContent=`M ≈ ${f1.toFixed(1)}/${f2.toFixed(1)} = ${M.toFixed(2)}× (magnitude)`;
+    return;
+  }
+
+  // Compound microscope schematic
+  const x1=235,x2=x1+Math.max(145,Math.min(tube*13,310));
+  lens(x1,'Objective');
+  lens(x2,'Eyepiece');
+
+  const objX=115,base=190,objH=38;
+  arrow(objX,base,objH,'#e64b87','Object');
+
+  const u=-obj;
+  const v=1/(1/f1-1/u);
+  const m=Math.abs(v/u);
+  const midX=x1+Math.max(22,Math.min(75,Math.abs(v)*8));
+  const midH=Math.min(105,objH*m);
+
+  arrow(midX,base,midH,'#e64b87','Intermediate image');
+  line(objX,base-objH,x1,base-midH,'#0878f9',1.8);
+  line(objX,base-objH,x1,base,'#0878f9',1.5);
+  line(x1,base-midH,midX,base-midH,'#0878f9',1.5,'4 4');
+  line(midX,base-midH,x2,base-10,'#e64b87',1.8);
+  line(midX,base-midH,x2,base+10,'#e64b87',1.8);
+  line(x2,base-10,785,base-60,'#e64b87',1.6);
+  line(x2,base+10,785,base+45,'#e64b87',1.6);
+  text(620,320,'Eyepiece magnifies intermediate image','#55749f',11);
+
+  const Me=near==='near'?1+25/f2:25/f2;
+  const total=m*Me;
+  $('smag').textContent=total.toFixed(1)+'×*';
+  $('snature').textContent='Virtual final image';
+  $('sview').textContent=near==='near'?'Near point':'Relaxed eye';
+  $('diagramHint').textContent='Compound microscope: objective makes a real enlarged intermediate image; eyepiece acts as a magnifier. *Magnification is an educational estimate.';
+  $('lensCalc').textContent=`Thin lens estimate: 1/v = 1/f − 1/u; fₒ=${f1.toFixed(1)} cm, object distance=${obj.toFixed(1)} cm.`;
+  $('objCalc').textContent=`|mₒ| = |v/u| ≈ ${m.toFixed(2)} (simplified estimate).`;
+  $('eyeCalc').textContent=near==='near'?`Mₑ ≈ 1 + 25/${f2.toFixed(1)} = ${Me.toFixed(2)}`:`Mₑ ≈ 25/${f2.toFixed(1)} = ${Me.toFixed(2)}`;
+  $('totalCalc').textContent=`|M| ≈ |mₒ| × Mₑ = ${m.toFixed(2)} × ${Me.toFixed(2)} ≈ ${total.toFixed(2)}×`;
+}
+
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('[data-mode]').forEach(b=>
+    b.classList.toggle('active',b.dataset.mode===m));
+  $('obj').min=(+$('f1').value+.1).toFixed(1);
+  if(+$('obj').value<=+$('f1').value)
+    $('obj').value=(+$('f1').value+.2).toFixed(1);
+  draw();
+}
+
+document.querySelectorAll('[data-mode]').forEach(b=>
+  b.addEventListener('click',()=>setMode(b.dataset.mode)));
+
+['f1','f2','obj','tube','near'].forEach(id=>
+  $(id).addEventListener('input',()=>{
+    if(id==='f1'){
+      $('obj').min=(+$('f1').value+.1).toFixed(1);
+      if(+$('obj').value<=+$('f1').value)
+        $('obj').value=(+$('f1').value+.2).toFixed(1);
+    }
+    $('f1out').textContent=(+$('f1').value).toFixed(1)+' cm';
+    $('f2out').textContent=(+$('f2').value).toFixed(1)+' cm';
+    $('objout').textContent=(+$('obj').value).toFixed(1)+' cm';
+    $('tubeout').textContent=$('tube').value+' cm';
+    draw();
+  })
+);
+
+function buildQuiz(){
+  const root=$('quiz');
+  root.innerHTML='';
+  qs.forEach((q,i)=>{
+    const box=document.createElement('div');
+    box.className='question';
+
+    const p=document.createElement('p');
+    p.textContent=(i+1)+'. '+q.q;
+    box.appendChild(p);
+
+    q.o.forEach((o,j)=>{
+      const b=document.createElement('button');
+      b.className='option';
+      b.textContent=String.fromCharCode(65+j)+'. '+o;
+      b.addEventListener('click',()=>{
+        answers[i]=j;
+        box.querySelectorAll('button').forEach((x,k)=>
+          x.style.borderColor=k===j?'var(--blue)':'var(--line)');
+      });
+      box.appendChild(b);
+    });
+
+    const why=document.createElement('div');
+    why.className='sub';
+    why.id='why'+i;
+    box.appendChild(why);
+    root.appendChild(box);
+  });
+}
+
+buildQuiz();
+
+$('checkQuiz').addEventListener('click',()=>{
+  let score=0;
+  qs.forEach((q,i)=>{
+    const box=$('quiz').children[i];
+    box.querySelectorAll('button').forEach((b,j)=>{
+      b.classList.remove('correct','wrong');
+      if(j===q.a)b.classList.add('correct');
+      if(answers[i]===j&&j!==q.a)b.classList.add('wrong');
+    });
+    $('why'+i).textContent=
+      (answers[i]===q.a?'Correct. ':'Review: ')+q.x;
+    if(answers[i]===q.a)score++;
+  });
+
+  $('quizResult').textContent=
+    `Your score: ${score}/${qs.length}. `+
+    (score===qs.length?'Excellent work! 🎉':'Read the explanations and try again.');
+  $('quizResult').style.color=
+    score===qs.length?'var(--green)':'var(--navy)';
+});
+
+$('resetQuiz').addEventListener('click',()=>{
+  answers={};
+  $('quizResult').textContent='';
+  buildQuiz();
+});
+
+$('f1out').textContent='1.0 cm';
+$('f2out').textContent='5.0 cm';
+$('objout').textContent='1.2 cm';
+$('tubeout').textContent='16 cm';
+draw();
+})();
+</script>
+
+</body>
+</html>

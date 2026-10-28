@@ -1,0 +1,1113 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflection & Spherical Mirrors | RayLab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+<style>
+:root {
+  --bg: #f5f9ff;
+  --panel: #ffffff;
+  --panel2: #edf5ff;
+  --text: #17365d;
+  --muted: #61748e;
+  --purple: #6e8cff;
+  --blue: #2583ed;
+  --border: #dce7f5;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 95px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "DM Sans", sans-serif;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 85% 5%,
+      rgba(91, 155, 255, .10), transparent 38%),
+    radial-gradient(ellipse at 5% 60%,
+      rgba(74, 190, 255, .07), transparent 35%);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, select {
+  font: inherit;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  min-height: 72px;
+  padding: 0 7%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: rgba(255, 255, 255, .91);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 3px 18px rgba(31, 78, 135, .04);
+}
+
+.logo {
+  font: 700 22px "Space Grotesk", sans-serif;
+  color: #17365d;
+}
+
+.logo span {
+  color: var(--blue);
+}
+
+.logo b {
+  color: var(--purple);
+  margin-right: 8px;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.nav-right a:hover {
+  color: var(--blue);
+}
+
+.back-link {
+  padding: 8px 13px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--text);
+  background: #f5f9ff;
+  transition: .2s;
+}
+
+.back-link:hover {
+  background: #e5f0ff;
+  border-color: #a9c9f5;
+}
+
+main {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 6% 80px;
+}
+
+.breadcrumb {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 22px;
+}
+
+.breadcrumb span {
+  color: var(--blue);
+}
+
+.hero {
+  max-width: 780px;
+  margin-bottom: 30px;
+}
+
+.eyebrow {
+  color: var(--blue);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+h1, h2, h3 {
+  font-family: "Space Grotesk", sans-serif;
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: clamp(35px, 5vw, 57px);
+  letter-spacing: -2px;
+  margin: 12px 0;
+  color: #17365d;
+}
+
+h1 span {
+  color: var(--blue);
+}
+
+.hero p {
+  max-width: 680px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.tag {
+  border: 1px solid #d7e7fb;
+  background: #eaf3ff;
+  border-radius: 30px;
+  padding: 5px 11px;
+  color: #245da8;
+  font-size: 11px;
+}
+
+.section-title {
+  margin: 42px 0 17px;
+}
+
+.section-title h2 {
+  font-size: 25px;
+  margin-bottom: 6px;
+  color: #17365d;
+}
+
+.section-title p {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.panel {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--panel);
+  box-shadow: 0 8px 28px rgba(40, 82, 140, .055);
+  overflow: hidden;
+}
+
+.sim-layout {
+  display: grid;
+  grid-template-columns: 1fr 275px;
+}
+
+.sim-stage {
+  min-width: 0;
+  padding: 12px;
+  position: relative;
+  background: #fafdff;
+}
+
+.sim-label {
+  position: absolute;
+  top: 22px;
+  left: 24px;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1.3px;
+  z-index: 1;
+}
+
+#rayDiagram {
+  width: 100%;
+  height: auto;
+  display: block;
+  min-height: 260px;
+  border-radius: 12px;
+}
+
+.controls {
+  padding: 23px;
+  border-left: 1px solid var(--border);
+  background: #fff;
+}
+
+.controls h3 {
+  font-size: 17px;
+  margin-bottom: 5px;
+}
+
+.controls > p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 22px;
+}
+
+.control {
+  margin: 19px 0;
+}
+
+.control-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  margin-bottom: 9px;
+}
+
+.control-head output {
+  color: var(--blue);
+  font-weight: 700;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--blue);
+  cursor: pointer;
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  background: #f7faff;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.small-note {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 7px;
+}
+
+.result {
+  border: 1px solid #cce5ff;
+  background: #eef7ff;
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 20px;
+}
+
+.result small {
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.result strong {
+  display: block;
+  font: 600 18px "Space Grotesk", sans-serif;
+  margin: 5px 0;
+  color: #176dc5;
+}
+
+.result p {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.sim-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 0 18px 17px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.info-card {
+  padding: 22px;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.info-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(40, 100, 180, .09);
+}
+
+.info-card h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #17365d;
+}
+
+.info-card p,
+.info-card li {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.info-card ul {
+  padding-left: 19px;
+  margin-top: 10px;
+}
+
+.info-card li {
+  margin: 5px 0;
+}
+
+.accent {
+  color: #2378d2;
+  font-weight: 600;
+}
+
+.formula {
+  margin: 14px 0;
+  padding: 13px;
+  text-align: center;
+  border-radius: 10px;
+  border: 1px solid #d6e7fb;
+  background: #f0f7ff;
+  font: 600 21px "Space Grotesk", sans-serif;
+  color: #2476cc;
+}
+
+.definition-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.definition {
+  padding: 17px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  transition: border-color .2s, transform .2s;
+}
+
+.definition:hover {
+  border-color: #9bc9fa;
+  transform: translateY(-2px);
+}
+
+.definition h3 {
+  font-size: 15px;
+  color: #2476cc;
+  margin-bottom: 7px;
+}
+
+.definition p {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12px;
+  min-width: 520px;
+  background: #fff;
+}
+
+th, td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  color: #245da8;
+  font-weight: 600;
+  background: #eaf3ff;
+}
+
+td {
+  color: #61748e;
+}
+
+tr:last-child td {
+  border-bottom: 0;
+}
+
+tr:hover td {
+  background: #f7faff;
+}
+
+.example {
+  padding: 22px;
+}
+
+.example h3 {
+  margin-bottom: 10px;
+  color: #17365d;
+}
+
+.example p {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 7px 0;
+}
+
+.answer {
+  color: #176dc5 !important;
+  font-weight: 700;
+  background: #eef7ff;
+  border-radius: 7px;
+  padding: 7px 10px;
+}
+
+.quiz {
+  padding: 23px;
+}
+
+.quiz-question {
+  padding: 17px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.quiz-question:last-of-type {
+  border-bottom: 0;
+}
+
+.quiz-question p {
+  font-size: 14px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #17365d;
+}
+
+.option {
+  display: block;
+  padding: 9px 12px;
+  margin: 7px 0;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+
+.option:hover {
+  border-color: #83b7f2;
+  background: #f0f7ff;
+  color: #17365d;
+}
+
+.option input {
+  accent-color: var(--blue);
+  margin-right: 8px;
+}
+
+.btn {
+  border: 0;
+  border-radius: 9px;
+  padding: 11px 17px;
+  cursor: pointer;
+  background: linear-gradient(110deg, #3987e8, #65b8ff);
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  margin-top: 16px;
+  box-shadow: 0 5px 14px rgba(57, 135, 232, .2);
+  transition: transform .2s, box-shadow .2s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(57, 135, 232, .3);
+}
+
+#quizResult {
+  margin-top: 12px;
+  color: #176dc5;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.footer {
+  padding: 25px 6%;
+  border-top: 1px solid var(--border);
+  background: #fff;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+}
+
+@media (max-width: 850px) {
+  .sim-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .controls {
+    border-left: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .definition-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  main {
+    padding: 28px 5% 60px;
+  }
+
+  .navbar {
+    padding: 0 5%;
+  }
+
+  .nav-right {
+    gap: 10px;
+    font-size: 11px;
+  }
+
+  .nav-right .optional {
+    display: none;
+  }
+
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .sim-stage {
+    padding: 5px;
+  }
+
+  .sim-label {
+    top: 12px;
+    left: 13px;
+  }
+
+  .controls {
+    padding: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+  }
+}
+</style>
+
+</head>
+
+<body>
+<nav class="navbar">
+  <a href="index.html" class="logo"><b>✦</b>Ray<span>Lab</span></a>
+  <div class="nav-right">
+    <a href="index.html" class="back-link">← Main page</a>
+    <a href="#learn" class="optional">Learn</a>
+    <a href="#quiz" class="optional">Quiz</a>
+  </div>
+</nav>
+
+<main>
+  <div class="breadcrumb"><a href="index.html">RayLab</a> / <span>Reflection & Spherical Mirrors</span></div>
+
+  <header class="hero">
+    <div class="eyebrow">CLASS 12 PHYSICS · RAY OPTICS</div>
+    <h1>Reflection & <span>Spherical Mirrors</span></h1>
+    <p>Where does an image form? Is it real or virtual? Explore how a mirror changes an image by moving the object and switching between concave and convex mirrors.</p>
+    <div class="tags">
+      <span class="tag">Laws of reflection</span>
+      <span class="tag">Concave & convex mirrors</span>
+      <span class="tag">Mirror formula</span>
+      <span class="tag">NCERT concepts</span>
+    </div>
+  </header>
+
+  <section id="experiment">
+    <div class="section-title">
+      <h2>01 / The mirror lab</h2>
+      <p>Change the settings and observe the calculated image position and nature.</p>
+    </div>
+
+    <div class="panel">
+      <div class="sim-layout">
+        <div class="sim-stage">
+          <div class="sim-label">LIVE IMAGE FORMATION · SCHEMATIC</div>
+          <svg id="rayDiagram" viewBox="0 0 720 410" role="img" aria-label="Schematic ray diagram of an object and its image near a spherical mirror">
+            <defs>
+              <pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse">
+                <path d="M25 0H0V25" fill="none" stroke="#9abce5" stroke-opacity=".18" stroke-width="1"/>
+              </pattern>
+              <linearGradient id="mirrorGlow" x1="0" x2="1">
+                <stop offset="0" stop-color="#91e5ff" stop-opacity=".2"/>
+                <stop offset="1" stop-color="#b9a7ff" stop-opacity=".8"/>
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <rect width="720" height="410" fill="#fafdff"/>
+            <rect width="720" height="410" fill="url(#grid)"/>
+            <g id="diagram"></g>
+          </svg>
+          <div class="sim-legend">
+            <span><i class="legend-dot" style="background:#91e5ff"></i>Incident / reflected rays</span>
+            <span><i class="legend-dot" style="background:#b9a7ff"></i>Image / virtual extension</span>
+            <span><i class="legend-dot" style="background:#f5c879"></i>Principal axis</span>
+          </div>
+        </div>
+
+        <aside class="controls">
+          <h3>Experiment controls</h3>
+          <p>Move the object and compare image formation.</p>
+
+          <div class="control">
+            <div class="control-head"><label for="mirrorType">Mirror type</label></div>
+            <select id="mirrorType">
+              <option value="concave">Concave mirror</option>
+              <option value="convex">Convex mirror</option>
+            </select>
+          </div>
+
+          <div class="control">
+            <div class="control-head">
+              <label for="objectDistance">Object distance |u|</label>
+              <output id="distanceValue">40 cm</output>
+            </div>
+            <input id="objectDistance" type="range" min="15" max="80" value="40">
+            <div class="small-note">Measured from the pole of the mirror.</div>
+          </div>
+
+          <div class="control">
+            <div class="control-head">
+              <label for="focalLength">Focal length |f|</label>
+              <output id="focalValue">20 cm</output>
+            </div>
+            <input id="focalLength" type="range" min="10" max="30" value="20">
+          </div>
+
+          <div class="result">
+            <small>Calculated image</small>
+            <strong id="imageNature">Real and inverted</strong>
+            <p id="imagePosition">Image position: -40 cm</p>
+            <p id="imageSize">Magnification: -1.00</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <p class="small-note">The diagram is schematic and not to scale. Image calculations use the Cartesian sign convention; the plotted rays are illustrative.</p>
+  </section>
+
+  <section id="learn">
+    <div class="section-title">
+      <h2>02 / Understand the basics</h2>
+      <p>Start with the ideas needed to understand spherical mirrors.</p>
+    </div>
+
+    <div class="two-col">
+      <article class="panel info-card">
+        <h3>What is reflection?</h3>
+        <p>Reflection is the return of light into the same medium after it strikes a surface.</p>
+        <ul>
+          <li>The angle of incidence equals the angle of reflection.</li>
+          <li>The incident ray, reflected ray, and normal lie in the same plane.</li>
+        </ul>
+      </article>
+      <article class="panel info-card">
+        <h3>What is a spherical mirror?</h3>
+        <p>A spherical mirror has a reflecting surface that forms part of a sphere.</p>
+        <ul>
+          <li><span class="accent">Concave:</span> reflecting surface curves inward.</li>
+          <li><span class="accent">Convex:</span> reflecting surface bulges outward.</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="section-title">
+      <h2>03 / Important mirror terms</h2>
+      <p>Learn to identify these points in a ray diagram.</p>
+    </div>
+
+    <div class="definition-grid">
+      <article class="definition">
+        <h3>Pole (P)</h3>
+        <p>The geometric centre of the reflecting surface of the mirror.</p>
+      </article>
+      <article class="definition">
+        <h3>Centre of curvature (C)</h3>
+        <p>The centre of the sphere of which the mirror is a part.</p>
+      </article>
+      <article class="definition">
+        <h3>Radius of curvature (R)</h3>
+        <p>The distance between the pole and the centre of curvature.</p>
+      </article>
+      <article class="definition">
+        <h3>Principal axis</h3>
+        <p>The straight line passing through the pole and centre of curvature.</p>
+      </article>
+      <article class="definition">
+        <h3>Principal focus (F)</h3>
+        <p>For a spherical mirror under the paraxial approximation, rays parallel to the principal axis converge at, or appear to diverge from, the principal focus after reflection.</p>
+      </article>
+      <article class="definition">
+        <h3>Focal length (f)</h3>
+        <p>The distance between the pole and the principal focus.</p>
+      </article>
+    </div>
+
+    <div class="section-title">
+      <h2>04 / Mirror formula and magnification</h2>
+      <p>Use the Cartesian sign convention consistently when substituting values.</p>
+    </div>
+
+    <div class="two-col">
+      <article class="panel info-card">
+        <h3>Mirror formula</h3>
+        <div class="formula">1/f = 1/v + 1/u</div>
+        <p><span class="accent">u</span> = object distance, <span class="accent">v</span> = image distance, and <span class="accent">f</span> = focal length.</p>
+        <div class="formula">R = 2f</div>
+        <p>For a spherical mirror in the paraxial approximation, the radius of curvature is twice the focal length.</p>
+      </article>
+      <article class="panel info-card">
+        <h3>Linear magnification</h3>
+        <div class="formula">m = hᵢ/hₒ = −v/u</div>
+        <p><span class="accent">hᵢ</span> is image height and <span class="accent">hₒ</span> is object height.</p>
+        <ul>
+          <li>m is negative: image is inverted.</li>
+          <li>m is positive: image is erect.</li>
+          <li>|m| greater than 1: enlarged image.</li>
+          <li>|m| less than 1: diminished image.</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="section-title">
+      <h2>05 / Cartesian sign convention</h2>
+      <p>Distances are measured from the pole, along the principal axis.</p>
+    </div>
+
+    <div class="panel table-wrap">
+      <table>
+        <thead><tr><th>Quantity</th><th>Positive (+)</th><th>Negative (−)</th></tr></thead>
+        <tbody>
+          <tr><td>Object distance (u)</td><td>Object to the right of P</td><td>Object to the left of P</td></tr>
+          <tr><td>Image distance (v)</td><td>Image to the right of P</td><td>Image to the left of P</td></tr>
+          <tr><td>Focal length (f)</td><td>Convex mirror</td><td>Concave mirror</td></tr>
+          <tr><td>Height</td><td>Above principal axis</td><td>Below principal axis</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small-note">The table assumes light travels from left to right and the usual Cartesian convention used in NCERT. For a real object placed in front of a mirror, u is negative.</p>
+
+    <div class="section-title">
+      <h2>06 / Image formation at a glance</h2>
+      <p>For a real object placed in front of a spherical mirror.</p>
+    </div>
+
+    <div class="panel table-wrap">
+      <table>
+        <thead><tr><th>Mirror</th><th>Object position</th><th>Image nature</th><th>Image size</th></tr></thead>
+        <tbody>
+          <tr><td>Concave</td><td>Beyond C</td><td>Real, inverted; between C and F</td><td>Diminished</td></tr>
+          <tr><td>Concave</td><td>At C</td><td>Real, inverted; at C</td><td>Same size</td></tr>
+          <tr><td>Concave</td><td>Between C and F</td><td>Real, inverted; beyond C</td><td>Enlarged</td></tr>
+          <tr><td>Concave</td><td>At F</td><td>Image at infinity in the ideal model</td><td>Highly enlarged</td></tr>
+          <tr><td>Concave</td><td>Between F and P</td><td>Virtual, erect; behind mirror</td><td>Enlarged</td></tr>
+          <tr><td>Convex</td><td>Any finite object position</td><td>Virtual, erect; behind mirror</td><td>Diminished</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-title">
+      <h2>07 / NCERT-style solved example</h2>
+      <p>Apply the mirror formula step by step.</p>
+    </div>
+
+    <article class="panel example">
+      <h3>Question</h3>
+      <p>An object is placed 30 cm in front of a concave mirror of focal length 15 cm. Find the image distance and magnification.</p>
+      <p><b>Step 1 — Sign convention:</b> u = −30 cm and f = −15 cm.</p>
+      <p><b>Step 2 — Mirror formula:</b> 1/f = 1/v + 1/u</p>
+      <p>1/v = 1/f − 1/u = −1/15 + 1/30 = −1/30</p>
+      <p class="answer">Therefore, v = −30 cm.</p>
+      <p><b>Step 3 — Magnification:</b> m = −v/u = −(−30)/(−30) = −1.</p>
+      <p class="answer">The image is real, inverted, and the same size as the object.</p>
+    </article>
+
+    <section id="quiz">
+      <div class="section-title">
+        <h2>08 / Test your understanding</h2>
+        <p>Try these questions before checking your score.</p>
+      </div>
+      <div class="panel quiz">
+        <div class="quiz-question">
+          <p>1. Which mirror can form a real image of a real object?</p>
+          <label class="option"><input type="radio" name="q1" value="a"> Convex mirror only</label>
+          <label class="option"><input type="radio" name="q1" value="b"> Concave mirror</label>
+          <label class="option"><input type="radio" name="q1" value="c"> Both always form real images</label>
+        </div>
+        <div class="quiz-question">
+          <p>2. An image has negative magnification. What does this indicate?</p>
+          <label class="option"><input type="radio" name="q2" value="a"> The image is erect</label>
+          <label class="option"><input type="radio" name="q2" value="b"> The image is inverted</label>
+          <label class="option"><input type="radio" name="q2" value="c"> The image must be virtual</label>
+        </div>
+        <div class="quiz-question">
+          <p>3. A convex mirror has focal length +20 cm. Under the Cartesian convention, what is its radius of curvature?</p>
+          <label class="option"><input type="radio" name="q3" value="a"> −40 cm</label>
+          <label class="option"><input type="radio" name="q3" value="b"> +10 cm</label>
+          <label class="option"><input type="radio" name="q3" value="c"> +40 cm</label>
+        </div>
+        <div class="quiz-question">
+          <p>4. Where is the image formed when an object is placed at the centre of curvature of a concave mirror?</p>
+          <label class="option"><input type="radio" name="q4" value="a"> At the centre of curvature</label>
+          <label class="option"><input type="radio" name="q4" value="b"> At the pole</label>
+          <label class="option"><input type="radio" name="q4" value="c"> Behind the mirror</label>
+        </div>
+        <button class="btn" id="checkQuiz">Check my answers →</button>
+        <p id="quizResult" aria-live="polite"></p>
+      </div>
+    </section>
+  </section>
+</main>
+
+<footer class="footer">RayLab · Learn physics by exploring · NCERT-oriented learning</footer>
+
+<script>
+const typeInput = document.getElementById("mirrorType");
+const distanceInput = document.getElementById("objectDistance");
+const focalInput = document.getElementById("focalLength");
+const diagram = document.getElementById("diagram");
+
+function line(x1,y1,x2,y2,color,width=2,dash=""){
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
+    stroke="${color}" stroke-width="${width}" ${dash ? `stroke-dasharray="${dash}"` : ""} stroke-linecap="round"/>`;
+}
+function text(x,y,str,color="#a4abc4",size=12,anchor="middle"){
+  return `<text x="${x}" y="${y}" fill="${color}" font-size="${size}" text-anchor="${anchor}" font-family="DM Sans, sans-serif">${str}</text>`;
+}
+function dot(x,y,color){
+  return `<circle cx="${x}" cy="${y}" r="4" fill="${color}" filter="url(#glow)"/>`;
+}
+function render(){
+  const concave = typeInput.value === "concave";
+  const d = Number(distanceInput.value);
+  const fmag = Number(focalInput.value);
+  const u = -d;
+  const f = concave ? -fmag : fmag;
+  const v = (f*u)/(u-f);
+  const m = -v/u;
+
+  document.getElementById("distanceValue").textContent = d + " cm";
+  document.getElementById("focalValue").textContent = fmag + " cm";
+
+  const poleX = 500, axisY = 220, scale = 3;
+  const fx = poleX + f*scale;
+  const cx = poleX + 2*f*scale;
+  const objX = poleX + u*scale;
+  const imageX = poleX + v*scale;
+  const objectH = 62;
+  const imageH = Math.max(-130,Math.min(130,m*objectH));
+  const real = concave && d > fmag;
+  const virtual = !real;
+  const visibleImageX = Math.max(24,Math.min(696,imageX));
+  const visibleImageY = axisY-imageH;
+
+  let s = "";
+
+  // Principal axis and mirror
+  s += line(25,axisY,695,axisY,"#f5c879",1.2);
+  s += text(687,axisY-9,"Principal axis","#f5c879",10,"end");
+
+  // Mirror surface: schematic curved line
+  let mirrorPath = "";
+  for(let i=0;i<=20;i++){
+    const yy=axisY-92+i*9.2;
+    const t=(yy-axisY)/92;
+    const xx=concave ? poleX+23*(1-t*t) : poleX-23*(1-t*t);
+    mirrorPath += `${i===0?"M":"L"}${xx.toFixed(1)},${yy.toFixed(1)} `;
+  }
+  s += `<path d="${mirrorPath}" fill="none" stroke="url(#mirrorGlow)" stroke-width="5" stroke-linecap="round"/>`;
+  s += `<path d="${mirrorPath}" fill="none" stroke="#d8e9ff" stroke-width="1.5"/>`;
+  s += text(poleX,axisY+20,"P","#f5c879",12);
+
+  // F and C are positioned by the signed focal length
+  if(Math.abs(fx)>28 && fx<690){
+    s += dot(fx,axisY,"#91e5ff")+text(fx,axisY+20,"F","#91e5ff",12);
+  }
+  if(Math.abs(cx)>28 && cx<690){
+    s += dot(cx,axisY,"#b9a7ff")+text(cx,axisY+20,"C","#b9a7ff",12);
+  }
+
+  // Object arrow
+  const objTop=axisY-objectH;
+  s += line(objX,axisY,objX,objTop,"#91e5ff",3);
+  s += `<path d="M${objX-6},${objTop+9} L${objX},${objTop} L${objX+6},${objTop+9}" fill="none" stroke="#91e5ff" stroke-width="2"/>`;
+  s += text(objX,objTop-13,"Object","#91e5ff",12);
+
+  // Approximate illustrative ray paths; the image calculation is exact
+  const hitY = axisY-42;
+  const hitX = poleX + (concave ? 23 : -23)*(1-Math.pow((hitY-axisY)/92,2));
+  const rayColor="#91e5ff";
+  s += line(objX,objTop,hitX,hitY,rayColor,1.8);
+  if(real){
+    s += line(hitX,hitY,visibleImageX,visibleImageY,rayColor,1.8);
+    s += line(objX,objTop,poleX,axisY,rayColor,1.3);
+    s += line(poleX,axisY,visibleImageX,visibleImageY,rayColor,1.3);
+  } else {
+    const extX=Math.max(20,Math.min(695,visibleImageX));
+    s += line(hitX,hitY,poleX+4,axisY+8,rayColor,1.8);
+    s += line(poleX+4,axisY+8,Math.min(695,extX),visibleImageY,"#b9a7ff",1.4,"5 5");
+    s += line(objX,objTop,poleX,axisY,rayColor,1.3);
+    s += line(poleX,axisY,Math.min(695,extX),visibleImageY,"#b9a7ff",1.4,"5 5");
+  }
+
+  // Image arrow; clamp to diagram so extreme values don't break layout
+  const safeH = Math.max(-125,Math.min(125,imageH));
+  const safeX = Math.max(24,Math.min(680,imageX));
+  const safeTop = axisY-safeH;
+  s += line(safeX,axisY,safeX,safeTop, "#b9a7ff",3, virtual?"5 4":"");
+  if(safeH>=0){
+    s += `<path d="M${safeX-6},${safeTop+9} L${safeX},${safeTop} L${safeX+6},${safeTop+9}" fill="none" stroke="#b9a7ff" stroke-width="2"/>`;
+  } else {
+    s += `<path d="M${safeX-6},${safeTop-9} L${safeX},${safeTop} L${safeX+6},${safeTop-9}" fill="none" stroke="#b9a7ff" stroke-width="2"/>`;
+  }
+  s += text(safeX, safeH>=0?safeTop-13:safeTop+22,"Image","#b9a7ff",12);
+
+  diagram.innerHTML=s;
+
+  const nature = real ? "Real and inverted" : "Virtual and erect";
+  document.getElementById("imageNature").textContent=nature;
+  document.getElementById("imagePosition").textContent =
+    "Image distance v = " + v.toFixed(2) + " cm";
+  document.getElementById("imageSize").textContent =
+    "Magnification m = " + m.toFixed(2) + (Math.abs(m)>1.01 ? " · Enlarged" : Math.abs(m)<0.99 ? " · Diminished" : " · Same size");
+}
+
+[typeInput,distanceInput,focalInput].forEach(el=>el.addEventListener("input",render));
+render();
+
+document.getElementById("checkQuiz").addEventListener("click",()=>{
+  const answers={q1:"b",q2:"b",q3:"c",q4:"a"};
+  let score=0,attempted=0;
+  for(const q in answers){
+    const selected=document.querySelector(`input[name="${q}"]:checked`);
+    if(selected) attempted++;
+    if(selected && selected.value===answers[q]) score++;
+  }
+  const result=document.getElementById("quizResult");
+  if(attempted<4){
+    result.textContent=`You've answered ${attempted}/4 questions. Complete all four to check your score.`;
+  } else {
+    result.textContent=`Your score: ${score}/4. ${score===4?"Excellent work! ✨":"Review the relevant sections and try again."}`;
+  }
+});
+</script>
+</body>
+</html>
+
+<style>
+/* ===== RayLab: clearer mirror diagram ===== */
+
+#rayDiagram {
+  background: #ffffff !important;
+  border: 1px solid #d7e6f7;
+  border-radius: 12px;
+}
+
+/* Darker, clearer SVG labels */
+#rayDiagram text {
+  fill: #24466f;
+  font-weight: 600;
+}
+
+/* Stronger principal axis and guide lines */
+#rayDiagram line {
+  stroke-width: 1.8;
+}
+
+/* Make the diagram easier to read */
+.sim-stage {
+  background: #ffffff !important;
+}
+
+.sim-label {
+  color: #31577f !important;
+  font-weight: 700;
+}
+
+/* Clearer experiment panel */
+.panel {
+  border-color: #cbdff5;
+  box-shadow: 0 8px 26px rgba(29, 86, 155, 0.09);
+}
+</style>
+
+<script>
+/* Improve ray visibility after each simulation redraw */
+(function () {
+  const diagram = document.getElementById("rayDiagram");
+  if (!diagram) return;
+
+  function improveDiagram() {
+    diagram.querySelectorAll("path, line, polyline").forEach(el => {
+      const stroke = (el.getAttribute("stroke") || "").toLowerCase();
+
+      if (!stroke || stroke === "none") return;
+
+      /* Keep dashed virtual extensions dashed */
+      if (el.getAttribute("stroke-dasharray")) {
+        el.setAttribute("stroke", "#7540C8");
+        el.setAttribute("stroke-width", "2.5");
+      } else if (
+        stroke.includes("91e5ff") ||
+        stroke.includes("2583ed") ||
+        stroke.includes("00") ||
+        stroke.includes("cyan")
+      ) {
+        el.setAttribute("stroke", "#0875D1");
+        el.setAttribute("stroke-width", "3");
+      }
+    });
+
+    diagram.querySelectorAll("text").forEach(el => {
+      el.setAttribute("fill", "#24466F");
+    });
+  }
+
+  improveDiagram();
+
+  /* Watch for the simulation redrawing its SVG */
+  new MutationObserver(improveDiagram).observe(diagram, {
+    childList: true,
+    subtree: true
+  });
+})();
+</script>
